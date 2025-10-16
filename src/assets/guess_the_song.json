@@ -1,52 +1,254 @@
-[
-  { "id": 1, "emojiQuestion": "🙋 + 👉 + ⛪️", "answer": "Take Me to Church" },
-  { "id": 2, "emojiQuestion": "👁 + ❤ + 🤘 + 🧻", "answer": "I Love Rock and Roll" },
-  { "id": 3, "emojiQuestion": "⛓ + 🔐 + 👩‍❤️‍👨", "answer": "Cuff It" },
-  { "id": 4, "emojiQuestion": "👋 + 👋 + 👋", "answer": "Bye Bye Bye" },
-  { "id": 5, "emojiQuestion": "🤴🤴 + 👸👸", "answer": "Kings and Queens" },
-  { "id": 6, "emojiQuestion": "👎 + 🩸", "answer": "Bad Blood" },
-  { "id": 7, "emojiQuestion": "🍉 + 🍬", "answer": "Watermelon Sugar" },
-  { "id": 8, "emojiQuestion": "🌊 + 👀", "answer": "Ocean Eyes" },
-  { "id": 9, "emojiQuestion": "🪜 + ➡️ + 🌫", "answer": "Stairway to Heaven" },
-  { "id": 10, "emojiQuestion": "🙅‍♀️ + 💧 + 👈 + ✌ + 😭", "answer": "No Tears Left to Cry" },
-  { "id": 11, "emojiQuestion": "☎️ + 🤔", "answer": "Call Me Maybe" },
-  { "id": 12, "emojiQuestion": "🌡 + 👧 + ☀️", "answer": "Hot Girl Summer" },
-  { "id": 13, "emojiQuestion": "😮‍💨 + ⬇️", "answer": "Calm Down" },
-  { "id": 14, "emojiQuestion": "🍬 + 🛒", "answer": "Candy Shop" },
-  { "id": 15, "emojiQuestion": "⬜ + 🌌", "answer": "Blank Space" },
-  { "id": 16, "emojiQuestion": "💎💎💎", "answer": "Diamonds" },
-  { "id": 17, "emojiQuestion": "🟪 + 🌧", "answer": "Purple Rain" },
-  { "id": 18, "emojiQuestion": "🌬️ + 👉 + 🎬", "answer": "Every Breath You Take" },
-  { "id": 19, "emojiQuestion": "👍 + 4️⃣ + 👉", "answer": "Good 4 U" },
-  { "id": 20, "emojiQuestion": "🐜 + ☕️ + 🦸‍♀️", "answer": "Anti-Hero" },
-  { "id": 21, "emojiQuestion": "😵‍💫 + 🍬", "answer": "Sour Candy" },
-  { "id": 22, "emojiQuestion": "🧊 + 🧊 + 👶", "answer": "Ice Ice Baby" },
-  { "id": 23, "emojiQuestion": "4️⃣3️⃣2️⃣1️⃣", "answer": "Countdown" },
-  { "id": 24, "emojiQuestion": "👶👶👶 + 😮", "answer": "Baby Baby Baby" },
-  { "id": 25, "emojiQuestion": "🔪 + 👨‍🦰", "answer": "Kill Bill" },
-  { "id": 26, "emojiQuestion": "🔥🔥 + ➡️ + 🌧🌧", "answer": "Set Fire To The Rain" },
-  { "id": 27, "emojiQuestion": "🚶‍♀️ + ➡️ + ☀️", "answer": "Walking on Sunshine" },
-  { "id": 28, "emojiQuestion": "💕 + ↔️ + 🧠", "answer": "Love on the Brain" },
-  { "id": 29, "emojiQuestion": "🗣 + ➡ + 🌝", "answer": "Talking to the Moon" },
-  { "id": 30, "emojiQuestion": "🧞‍♂️ + 🍼", "answer": "Genie in a Bottle" },
-  { "id": 31, "emojiQuestion": "😴 + ⏰", "answer": "Wake Me Up" },
-  { "id": 32, "emojiQuestion": "🎂 + 🎉", "answer": "Birthday" },
-  { "id": 33, "emojiQuestion": "🚗 + 🪪", "answer": "Driver’s License" },
-  { "id": 34, "emojiQuestion": "👗", "answer": "Dress" },
-  { "id": 35, "emojiQuestion": "🗓️ + 🌧️", "answer": "November Rain" },
-  { "id": 36, "emojiQuestion": "🐴 + 🛣️", "answer": "Old Town Road" },
-  { "id": 37, "emojiQuestion": "💄 + 👠", "answer": "Vogue" },
-  { "id": 38, "emojiQuestion": "🔙 + 🗓️", "answer": "Back to December" },
-  { "id": 39, "emojiQuestion": "🙏 + 👩", "answer": "God Is a Woman" },
-  { "id": 40, "emojiQuestion": "❄️ + 🧃", "answer": "Ice Juice" },
-  { "id": 41, "emojiQuestion": "🏃‍♀️ + 🌍", "answer": "Run the World" },
-  { "id": 42, "emojiQuestion": "🔇", "answer": "The Sound of Silence" },
-  { "id": 43, "emojiQuestion": "🎇", "answer": "Firework" },
-  { "id": 44, "emojiQuestion": "💬 + 📱", "answer": "Text Me" },
-  { "id": 45, "emojiQuestion": "💋 + 🌹", "answer": "Kiss from a Rose" },
-  { "id": 46, "emojiQuestion": "🗣️ + 🌕", "answer": "Talking to the Moon" },
-  { "id": 47, "emojiQuestion": "👤 + ➡️ + 👤", "answer": "Someone Like You" },
-  { "id": 48, "emojiQuestion": "🤯", "answer": "Mind Blown" },
-  { "id": 49, "emojiQuestion": "💋 + ➕", "answer": "Kiss Me More" },
-  { "id": 50, "emojiQuestion": "😢 + ❤️", "answer": "Tear in My Heart" }
-] 
+{
+  "questions": [
+    {
+      "question": "🙋 + 👉 + ⛪️",
+      "options": ["Take Me to Church", "Church Bells", "Holy Water", "Prayer"],
+      "answer": "Take Me to Church"
+    },
+    {
+      "question": "👁 + ❤ + 🤘 + 🧻",
+      "options": ["I Love Rock and Roll", "Rock You", "Rock Star", "Rock and Roll"],
+      "answer": "I Love Rock and Roll"
+    },
+    {
+      "question": "⛓ + 🔐 + 👩‍❤️‍👨",
+      "options": ["Cuff It", "Locked Up", "Chained", "Bound"],
+      "answer": "Cuff It"
+    },
+    {
+      "question": "👋 + 👋 + 👋",
+      "options": ["Bye Bye Bye", "Goodbye", "See You Later", "Farewell"],
+      "answer": "Bye Bye Bye"
+    },
+    {
+      "question": "🤴🤴 + 👸👸",
+      "options": ["Kings and Queens", "Royalty", "Crown", "Throne"],
+      "answer": "Kings and Queens"
+    },
+    {
+      "question": "👎 + 🩸",
+      "options": ["Bad Blood", "Evil Blood", "Dark Blood", "Red Blood"],
+      "answer": "Bad Blood"
+    },
+    {
+      "question": "🍉 + 🍬",
+      "options": ["Watermelon Sugar", "Sweet Fruit", "Candy Melon", "Sugar Rush"],
+      "answer": "Watermelon Sugar"
+    },
+    {
+      "question": "🌊 + 👀",
+      "options": ["Ocean Eyes", "Sea Eyes", "Blue Eyes", "Deep Eyes"],
+      "answer": "Ocean Eyes"
+    },
+    {
+      "question": "🪜 + ➡️ + 🌫",
+      "options": ["Stairway to Heaven", "Heaven's Gate", "Cloud Stairs", "Sky Ladder"],
+      "answer": "Stairway to Heaven"
+    },
+    {
+      "question": "🙅‍♀️ + 💧 + 👈 + ✌ + 😭",
+      "options": ["No Tears Left to Cry", "Cry No More", "Dry Eyes", "No More Tears"],
+      "answer": "No Tears Left to Cry"
+    },
+    {
+      "question": "☎️ + 🤔",
+      "options": ["Call Me Maybe", "Maybe Call", "Phone Call", "Ring Me"],
+      "answer": "Call Me Maybe"
+    },
+    {
+      "question": "🌡 + 👧 + ☀️",
+      "options": ["Hot Girl Summer", "Summer Girl", "Hot Summer", "Girl Summer"],
+      "answer": "Hot Girl Summer"
+    },
+    {
+      "question": "😮‍💨 + ⬇️",
+      "options": ["Calm Down", "Relax", "Chill Out", "Take It Easy"],
+      "answer": "Calm Down"
+    },
+    {
+      "question": "🍬 + 🛒",
+      "options": ["Candy Shop", "Sweet Store", "Sugar Shop", "Treat Store"],
+      "answer": "Candy Shop"
+    },
+    {
+      "question": "⬜ + 🌌",
+      "options": ["Blank Space", "Empty Space", "White Space", "Clear Space"],
+      "answer": "Blank Space"
+    },
+    {
+      "question": "💎💎💎",
+      "options": ["Diamonds", "Gems", "Jewels", "Crystals"],
+      "answer": "Diamonds"
+    },
+    {
+      "question": "🟪 + 🌧",
+      "options": ["Purple Rain", "Rain Purple", "Purple Storm", "Violet Rain"],
+      "answer": "Purple Rain"
+    },
+    {
+      "question": "🌬️ + 👉 + 🎬",
+      "options": ["Every Breath You Take", "Breathing", "Watch You", "Spy On You"],
+      "answer": "Every Breath You Take"
+    },
+    {
+      "question": "👍 + 4️⃣ + 👉",
+      "options": ["Good 4 U", "Good For You", "Good Times", "Good Life"],
+      "answer": "Good 4 U"
+    },
+    {
+      "question": "🐜 + ☕️ + 🦸‍♀️",
+      "options": ["Anti-Hero", "Hero", "Villain", "Superhero"],
+      "answer": "Anti-Hero"
+    },
+    {
+      "question": "😵‍💫 + 🍬",
+      "options": ["Sour Candy", "Sweet Candy", "Bitter Candy", "Spicy Candy"],
+      "answer": "Sour Candy"
+    },
+    {
+      "question": "🧊 + 🧊 + 👶",
+      "options": ["Ice Ice Baby", "Cold Baby", "Frozen Baby", "Ice Baby"],
+      "answer": "Ice Ice Baby"
+    },
+    {
+      "question": "4️⃣3️⃣2️⃣1️⃣",
+      "options": ["Countdown", "Numbers", "Count", "Timer"],
+      "answer": "Countdown"
+    },
+    {
+      "question": "👶👶👶 + 😮",
+      "options": ["Baby Baby Baby", "Three Babies", "Baby Times Three", "Baby Trio"],
+      "answer": "Baby Baby Baby"
+    },
+    {
+      "question": "🔪 + 👨‍🦰",
+      "options": ["Kill Bill", "Bill Killer", "Red Hair", "Blade"],
+      "answer": "Kill Bill"
+    },
+    {
+      "question": "🔥🔥 + ➡️ + 🌧🌧",
+      "options": ["Set Fire To The Rain", "Fire Rain", "Burning Rain", "Hot Rain"],
+      "answer": "Set Fire To The Rain"
+    },
+    {
+      "question": "🚶‍♀️ + ➡️ + ☀️",
+      "options": ["Walking on Sunshine", "Sun Walk", "Bright Walk", "Sunny Walk"],
+      "answer": "Walking on Sunshine"
+    },
+    {
+      "question": "💕 + ↔️ + 🧠",
+      "options": ["Love on the Brain", "Brain Love", "Mind Love", "Head Love"],
+      "answer": "Love on the Brain"
+    },
+    {
+      "question": "🗣 + ➡ + 🌝",
+      "options": ["Talking to the Moon", "Moon Talk", "Lunar Chat", "Moon Speak"],
+      "answer": "Talking to the Moon"
+    },
+    {
+      "question": "🧞‍♂️ + 🍼",
+      "options": ["Genie in a Bottle", "Bottle Genie", "Magic Bottle", "Wish Bottle"],
+      "answer": "Genie in a Bottle"
+    },
+    {
+      "question": "😴 + ⏰",
+      "options": ["Wake Me Up", "Sleep Timer", "Alarm Clock", "Morning Call"],
+      "answer": "Wake Me Up"
+    },
+    {
+      "question": "🎂 + 🎉",
+      "options": ["Birthday", "Party Time", "Celebration", "Happy Day"],
+      "answer": "Birthday"
+    },
+    {
+      "question": "🚗 + 🪪",
+      "options": ["Driver's License", "License to Drive", "Car License", "Road Permit"],
+      "answer": "Driver's License"
+    },
+    {
+      "question": "👗",
+      "options": ["Dress", "Gown", "Outfit", "Fashion"],
+      "answer": "Dress"
+    },
+    {
+      "question": "🗓️ + 🌧️",
+      "options": ["November Rain", "Rainy November", "Fall Rain", "Autumn Storm"],
+      "answer": "November Rain"
+    },
+    {
+      "question": "🐴 + 🛣️",
+      "options": ["Old Town Road", "Country Road", "Horse Path", "Rural Street"],
+      "answer": "Old Town Road"
+    },
+    {
+      "question": "💄 + 👠",
+      "options": ["Vogue", "Fashion", "Style", "Trend"],
+      "answer": "Vogue"
+    },
+    {
+      "question": "🔙 + 🗓️",
+      "options": ["Back to December", "December Return", "Winter Back", "Cold Return"],
+      "answer": "Back to December"
+    },
+    {
+      "question": "🙏 + 👩",
+      "options": ["God Is a Woman", "Divine Woman", "Holy Lady", "Sacred Female"],
+      "answer": "God Is a Woman"
+    },
+    {
+      "question": "❄️ + 🧃",
+      "options": ["Ice Juice", "Cold Drink", "Frozen Juice", "Chilled Beverage"],
+      "answer": "Ice Juice"
+    },
+    {
+      "question": "🏃‍♀️ + 🌍",
+      "options": ["Run the World", "World Runner", "Global Run", "Earth Runner"],
+      "answer": "Run the World"
+    },
+    {
+      "question": "🔇",
+      "options": ["The Sound of Silence", "Silent Sound", "Quiet Noise", "Muted Voice"],
+      "answer": "The Sound of Silence"
+    },
+    {
+      "question": "🎇",
+      "options": ["Firework", "Sparkler", "Explosion", "Light Show"],
+      "answer": "Firework"
+    },
+    {
+      "question": "💬 + 📱",
+      "options": ["Text Me", "Message Me", "Call Me", "Contact Me"],
+      "answer": "Text Me"
+    },
+    {
+      "question": "💋 + 🌹",
+      "options": ["Kiss from a Rose", "Rose Kiss", "Flower Kiss", "Petal Kiss"],
+      "answer": "Kiss from a Rose"
+    },
+    {
+      "question": "🗣️ + 🌕",
+      "options": ["Talking to the Moon", "Moon Talk", "Lunar Chat", "Moon Speak"],
+      "answer": "Talking to the Moon"
+    },
+    {
+      "question": "👤 + ➡️ + 👤",
+      "options": ["Someone Like You", "Like You", "Similar Person", "Your Match"],
+      "answer": "Someone Like You"
+    },
+    {
+      "question": "🤯",
+      "options": ["Mind Blown", "Brain Explosion", "Mental Blast", "Head Pop"],
+      "answer": "Mind Blown"
+    },
+    {
+      "question": "💋 + ➕",
+      "options": ["Kiss Me More", "More Kisses", "Extra Kiss", "Kiss Again"],
+      "answer": "Kiss Me More"
+    },
+    {
+      "question": "😢 + ❤️",
+      "options": ["Tear in My Heart", "Heart Tear", "Broken Heart", "Heart Cry"],
+      "answer": "Tear in My Heart"
+    }
+  ]
+} 

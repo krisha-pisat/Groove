@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import {
   Play, Pause, SkipForward, SkipBack, Repeat, Volume2, Shuffle, Music, Loader2
 } from "lucide-react";
@@ -9,88 +9,105 @@ import { Slider } from "@/components/ui/slider";
 const MusicPlayer = ({
   currentSong,
   queue,
-  isPlaying,
-  playbackPosition,
-  getSyncedPosition,
+  isPlaying, // Synced state from Supabase
+  playbackPosition, // Synced state from Supabase
+  getSyncedPosition, // Function to get adjusted synced position
+
   volume,
-  // isHost, // No longer needed for control logic
   isShuffling,
   setIsShuffling,
 
-  onPlay,
-  onPause,
-  onEnded,
-  onSeek,
-  onSongChange,
-  onQueueUpdate,
+  onPlay, // Callback to Room.jsx to update Supabase
+  onPause, // Callback to Room.jsx to update Supabase
+  onEnded, // Callback to Room.jsx when song ends (e.g., skip to next)
+  onSeek, // Callback to Room.jsx to update Supabase
+  onSongChange, // Callback to Room.jsx to change current song and queue
+  onQueueUpdate, // Callback to Room.jsx to update queue (e.g., shuffle)
 }) => {
-  const playerRef = useRef(null);
-  const [internalIsPlaying, setInternalIsPlaying] = useState(false);
+  const playerRef = useRef(null); // Reference to the YouTube player instance
+  const [internalIsPlaying, setInternalIsPlaying] = useState(false); // Local state for UI/player's actual play status
   const [isLoading, setIsLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0); // Local state for UI progress slider
   const [duration, setDuration] = useState(0);
-  const intervalRef = useRef(null);
-  const [internalVolume, setInternalVolume] = useState(volume);
-  const isPlayerReady = useRef(false);
+  const intervalRef = useRef(null); // Reference for the progress update interval
+  const [internalVolume, setInternalVolume] = useState(volume); // Local state for volume slider
+  const [isYoutubeApiReady, setIsYoutubeApiReady] = useState(false); // State to track if window.YT is fully loaded
+  const playerInstanceReady = useRef(false); // Tracks if playerRef.current is fully initialized and ready to receive commands
 
+  // --- Volume Control ---
   useEffect(() => {
     setInternalVolume(volume);
-    if (playerRef.current && isPlayerReady.current) {
+    if (playerRef.current && playerInstanceReady.current) {
       playerRef.current.setVolume(volume[0]);
     }
   }, [volume]);
 
-  // Load YouTube Iframe API script
+  // --- YouTube Iframe API Loading ---
   useEffect(() => {
-    if (!window.YT) {
+    console.log("MusicPlayer useEffect [API Loading]: Component mounted.");
+    // Load YouTube Iframe API script if not already loaded
+    if (!window.YT && !document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
       const tag = document.createElement("script");
       tag.src = "https://www.youtube.com/iframe_api";
+      tag.id = "youtube-iframe-api-script"; // Add an ID for easier selection
       const firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      console.log("MusicPlayer useEffect [API Loading]: YouTube API script injected.");
+    } else if (window.YT) {
+        console.log("MusicPlayer useEffect [API Loading]: YouTube API already loaded (window.YT exists). Setting isYoutubeApiReady to true.");
+        setIsYoutubeApiReady(true); // Set true immediately if already loaded
     }
 
+
+    // Set the global callback for YouTube API readiness
     window.onYouTubeIframeAPIReady = () => {
-      if (currentSong && !playerRef.current) {
-        createPlayer(currentSong.videoId);
-      }
+      console.log("window.onYouTubeIframeAPIReady fired. Setting isYoutubeApiReady to true.");
+      setIsYoutubeApiReady(true); // Now uses state, which triggers re-renders
     };
 
+    // Cleanup function for when component unmounts
     return () => {
-      const tag = document.querySelector('script[src="https://www.youtube.com/iframe_api"]');
-      if (tag && document.body.contains(tag)) {
-        document.body.removeChild(tag);
-      }
+      console.log("MusicPlayer useEffect [API Loading]: Cleanup initiated.");
       delete window.onYouTubeIframeAPIReady;
       if (playerRef.current && typeof playerRef.current.destroy === 'function') {
+        console.log("MusicPlayer useEffect [API Loading]: Destroying player instance during cleanup.");
         playerRef.current.destroy();
         playerRef.current = null;
-        isPlayerReady.current = false;
+        playerInstanceReady.current = false;
+      }
+      const tag = document.getElementById('youtube-iframe-api-script'); // Use ID for removal
+      if (tag && document.body.contains(tag)) {
+        console.log("MusicPlayer useEffect [API Loading]: Removing YouTube API script during cleanup.");
+        document.body.removeChild(tag);
       }
     };
-  }, []);
+  }, []); // Empty dependency array to run once on mount
 
-  const createPlayer = (videoId) => {
-    if (playerRef.current && playerRef.current.getVideoData().video_id === videoId) {
-      if (isPlaying && playerRef.current.getPlayerState() !== window.YT.PlayerState.PLAYING) {
-        playerRef.current.playVideo();
-      } else if (!isPlaying && playerRef.current.getPlayerState() !== window.YT.PlayerState.PAUSED) {
-        playerRef.current.pauseVideo();
-      }
-      const syncedTime = getSyncedPosition();
-      const currentLocalTime = playerRef.current.getCurrentTime();
-      if (Math.abs(currentLocalTime - syncedTime) > 1.5) {
-        playerRef.current.seekTo(syncedTime, true);
-      }
+  // --- Player Creation and State Management ---
+  const createPlayer = useCallback((videoId) => {
+    // Ensure YouTube API is fully loaded before attempting to create player
+    if (!window.YT || !window.YT.Player) {
+      console.warn("createPlayer: YouTube Iframe API not ready (window.YT.Player missing). Deferring.");
+      return;
+    }
+
+    // If player already exists and is playing the same video, just ensure state
+    if (playerRef.current && playerInstanceReady.current && playerRef.current.getVideoData().video_id === videoId) {
+      console.log("createPlayer: Player already exists for this video. Relying on main useEffect for sync.");
+      setDuration(playerRef.current.getDuration());
       setIsLoading(false);
       return;
     }
 
+    // If player exists but needs a new video or needs to be recreated (e.g., video changed)
     if (playerRef.current && typeof playerRef.current.destroy === 'function') {
+        console.log("createPlayer: Destroying existing player for new video or recreation.");
         playerRef.current.destroy();
         playerRef.current = null;
-        isPlayerReady.current = false;
+        playerInstanceReady.current = false; // Reset readiness as old player is destroyed
     }
 
+    console.log("createPlayer: Creating new YouTube Player instance for videoId:", videoId);
     playerRef.current = new window.YT.Player("yt-player", {
       videoId: videoId,
       playerVars: {
@@ -102,8 +119,11 @@ const MusicPlayer = ({
       },
       events: {
         onReady: (e) => {
-          isPlayerReady.current = true;
+          playerInstanceReady.current = true; // Crucial: Player instance is now fully ready!
+          console.log("YouTube Player onReady: Player instance is ready. Applying initial sync.");
           e.target.setVolume(internalVolume[0]);
+
+          // Apply initial synced state from props (isPlaying, playbackPosition)
           const syncedPos = getSyncedPosition();
           e.target.seekTo(syncedPos, true);
           if (isPlaying) {
@@ -116,32 +136,35 @@ const MusicPlayer = ({
           setInternalIsPlaying(isPlaying);
         },
         onStateChange: (e) => {
-          // No longer check isHost here, as any user can control
-          if (e.data === window.YT.PlayerState.PLAYING && !internalIsPlaying) {
-            onPlay();
-          } else if (e.data === window.YT.PlayerState.PAUSED && internalIsPlaying) {
-            onPause();
-          } else if (e.data === window.YT.PlayerState.ENDED) {
+          console.log("YouTube Player onStateChange (local):", e.data);
+          const newPlayerState = e.data;
+
+          setInternalIsPlaying(newPlayerState === window.YT.PlayerState.PLAYING);
+          setIsLoading(newPlayerState === window.YT.PlayerState.BUFFERING || newPlayerState === window.YT.PlayerState.UNSTARTED);
+
+          if (newPlayerState === window.YT.PlayerState.ENDED) {
             handleSkip();
           }
-          setInternalIsPlaying(e.data === window.YT.PlayerState.PLAYING);
-          setIsLoading(e.data === window.YT.PlayerState.BUFFERING || e.data === window.YT.PlayerState.UNSTARTED);
         },
         onError: (e) => {
           console.error("YouTube Player Error:", e);
           setIsLoading(false);
-          // Any user can trigger a skip on error
           if (queue.length > 0) {
             handleSkip();
           }
         }
       },
     });
-  };
+  }, [isPlaying, internalVolume, getSyncedPosition, queue]);
 
+  // --- Main Effect for Synchronizing Player with Supabase State ---
   useEffect(() => {
+    console.log("Main useEffect triggered. currentSong:", currentSong, "isPlaying:", isPlaying, "isYoutubeApiReady:", isYoutubeApiReady, "playerInstanceReady:", playerInstanceReady.current);
+
+    // If no song is current, stop player and reset UI
     if (!currentSong || Object.keys(currentSong).length === 0) {
-      if (playerRef.current && isPlayerReady.current) {
+      if (playerRef.current && playerInstanceReady.current && typeof playerRef.current.stopVideo === 'function') {
+        console.log("Main useEffect: No current song, stopping player.");
         playerRef.current.stopVideo();
       }
       setInternalIsPlaying(false);
@@ -151,31 +174,51 @@ const MusicPlayer = ({
       return;
     }
 
-    if (!playerRef.current || !isPlayerReady.current || playerRef.current.getVideoData().video_id !== currentSong.videoId) {
-      createPlayer(currentSong.videoId);
+    // If YouTube API is not yet ready, defer player creation/sync
+    if (!isYoutubeApiReady) {
+      console.log("Main useEffect: YouTube API not yet ready, deferring player creation/sync.");
       return;
     }
 
-    if (isPlaying && playerRef.current.getPlayerState() !== window.YT.PlayerState.PLAYING) {
-      playerRef.current.playVideo();
-    } else if (!isPlaying && playerRef.current.getPlayerState() !== window.YT.PlayerState.PAUSED) {
-      playerRef.current.pauseVideo();
+    // If player instance is not created or needs to be reloaded for a new song
+    const needsNewPlayer = !playerRef.current || (playerInstanceReady.current && playerRef.current.getVideoData().video_id !== currentSong.videoId);
+
+    if (needsNewPlayer) {
+      console.log("Main useEffect: Player needs creation/re-load for videoId:", currentSong.videoId);
+      createPlayer(currentSong.videoId); // Call createPlayer directly
+      return; // Exit, as player creation/loading will handle the state sync
     }
 
-    const currentLocalTime = playerRef.current.getCurrentTime();
-    const syncedTime = getSyncedPosition();
-    const diff = Math.abs(currentLocalTime - syncedTime);
+    // If the same song is playing and player instance is ready, synchronize play/pause/seek
+    if (playerInstanceReady.current) {
+        console.log("Main useEffect: Player is ready for current song, syncing play/pause/seek.");
+        // Sync play/pause state
+        if (isPlaying && playerRef.current.getPlayerState() !== window.YT.PlayerState.PLAYING) {
+            console.log("Main useEffect: Playing video due to synced state.");
+            playerRef.current.playVideo();
+        } else if (!isPlaying && playerRef.current.getPlayerState() !== window.YT.PlayerState.PAUSED) {
+            console.log("Main useEffect: Pausing video due to synced state.");
+            playerRef.current.pauseVideo();
+        }
 
-    if (diff > 1.5) {
-      playerRef.current.seekTo(syncedTime, true);
+        // Sync playback position if significantly off
+        const currentLocalTime = playerRef.current.getCurrentTime();
+        const syncedTime = getSyncedPosition();
+        const diff = Math.abs(currentLocalTime - syncedTime);
+
+        if (diff > 1.5) { // Resync if difference is more than 1.5 seconds
+            console.log(`Main useEffect: Seeking video due to synced state. Diff: ${diff.toFixed(2)}s`);
+            playerRef.current.seekTo(syncedTime, true);
+        }
     }
-  }, [currentSong, isPlaying, getSyncedPosition, createPlayer]);
+  }, [currentSong, isPlaying, playbackPosition, getSyncedPosition, createPlayer, isYoutubeApiReady, playerInstanceReady]);
 
+  // --- Progress Update Interval for UI ---
   useEffect(() => {
     clearInterval(intervalRef.current);
     if (internalIsPlaying) {
       intervalRef.current = setInterval(() => {
-        if (playerRef.current && isPlayerReady.current) {
+        if (playerRef.current && playerInstanceReady.current) {
           const current = playerRef.current.getCurrentTime();
           const dur = playerRef.current.getDuration();
           setProgress(current);
@@ -186,14 +229,19 @@ const MusicPlayer = ({
     return () => clearInterval(intervalRef.current);
   }, [internalIsPlaying]);
 
-  // Controls are now available to all users
+  // --- User Interaction Handlers (Now ONLY Update Supabase) ---
   const togglePlay = () => {
-    if (!playerRef.current || !currentSong || Object.keys(currentSong).length === 0) return;
-    internalIsPlaying ? onPause() : onPlay();
+    if (!currentSong || Object.keys(currentSong).length === 0) {
+      console.warn("togglePlay: No current song to play/pause.");
+      return;
+    }
+    isPlaying ? onPause() : onPlay();
+    console.log("togglePlay: Sent play/pause command to Supabase.");
   };
 
   const handleSkip = () => {
     if (!currentSong || Object.keys(currentSong).length === 0) return;
+
     let newCurrentSong = null;
     let newQueue = [...queue];
 
@@ -207,19 +255,21 @@ const MusicPlayer = ({
             newQueue = newQueue.slice(1);
         }
     }
-
     onSongChange(newCurrentSong, newQueue);
+    console.log("handleSkip: Sent skip command to Supabase.");
   };
 
   const handlePrev = () => {
     if (!currentSong || Object.keys(currentSong).length === 0) return;
     onSeek(0);
+    console.log("handlePrev: Sent seek to 0 command to Supabase.");
   };
 
   const handleSeek = (val) => {
-    if (!playerRef.current || !currentSong || Object.keys(currentSong).length === 0) return;
+    if (!currentSong || Object.keys(currentSong).length === 0) return;
     const newTime = val[0];
     onSeek(newTime);
+    console.log("handleSeek: Sent seek command to Supabase.");
   };
 
   const handleShuffleToggle = () => {
@@ -233,6 +283,7 @@ const MusicPlayer = ({
             [shuffledQueue[i], shuffledQueue[j]] = [shuffledQueue[j], shuffledQueue[i]];
         }
         onQueueUpdate(shuffledQueue);
+        console.log("handleShuffleToggle: Sent shuffle queue update to Supabase.");
     }
   };
 
@@ -322,7 +373,7 @@ const MusicPlayer = ({
               value={internalVolume}
               onValueChange={(val) => {
                 setInternalVolume(val);
-                if (playerRef.current && isPlayerReady.current) playerRef.current.setVolume(val[0]);
+                if (playerRef.current && playerInstanceReady.current) playerRef.current.setVolume(val[0]);
               }}
               max={100}
               step={1}

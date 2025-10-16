@@ -1,528 +1,495 @@
-[
+{
+  "questions": [
     {
-      "question": "Which 2019 single became Billie Eilish's first U.S. No. 1 hit?",
-      "choices": ["Bad Guy", "Happier Than Ever", "Bury a Friend", "Therefore I Am"],
+      "question": "Which 2019 single became Billie Eilish's first U.S. No. 1 hit?",
+      "options": ["Bad Guy", "Happier Than Ever", "Bury a Friend", "Therefore I Am"],
       "answer": "Bad Guy"
     },
     {
       "question": "What 2023 album by Taylor Swift broke the Spotify record for most streams in a single day?",
-      "choices": ["Midnights", "Evermore", "Lover", "Folklore"],
+      "options": ["Midnights", "Evermore", "Lover", "Folklore"],
       "answer": "Midnights"
     },
     {
-      "question": "“Blinding Lights” is a smash hit released in 2019 by which Canadian artist?",
-      "choices": ["The Weeknd", "Shawn Mendes", "Drake", "Justin Bieber"],
+      "question": "Blinding Lights is a smash hit released in 2019 by which Canadian artist?",
+      "options": ["The Weeknd", "Shawn Mendes", "Drake", "Justin Bieber"],
       "answer": "The Weeknd"
     },
     {
-      "question": "Which K‑pop group released the song “Dynamite,” the first all‑English single to top the Billboard Hot 100 in 2020?",
-      "choices": ["BTS", "Blackpink", "Seventeen", "Stray Kids"],
+      "question": "Which K‑pop group released the song Dynamite, the first all‑English single to top the Billboard Hot 100 in 2020?",
+      "options": ["BTS", "Blackpink", "Seventeen", "Stray Kids"],
       "answer": "BTS"
     },
     {
-      "question": "Lizzo’s breakout 2019 hit that starts with the lyric “Why men great till they gotta be great” is called…",
-      "choices": ["Truth Hurts", "Juice", "Good as Hell", "About Damn Time"],
+      "question": "Lizzo’s breakout 2019 hit that starts with the lyric 'Why men great till they gotta be great' is called…",
+      "options": ["Truth Hurts", "Juice", "Good as Hell", "About Damn Time"],
       "answer": "Truth Hurts"
     },
     {
-      "question": "Which British singer‑songwriter released the albums “÷” (Divide) in 2017 and “=” (Equals) in 2021?",
-      "choices": ["Ed Sheeran", "Sam Smith", "Lewis Capaldi", "James Arthur"],
+      "question": "Which British singer‑songwriter released the albums ÷ (Divide) in 2017 and = (Equals) in 2021?",
+      "options": ["Ed Sheeran", "Sam Smith", "Lewis Capaldi", "James Arthur"],
       "answer": "Ed Sheeran"
     },
     {
       "question": "Olivia Rodrigo launched her career with which record‑breaking 2021 debut single?",
-      "choices": ["drivers license", "Good 4 U", "deja vu", "traitor"],
+      "options": ["drivers license", "Good 4 U", "deja vu", "traitor"],
       "answer": "drivers license"
     },
     {
-      "question": "Which Puerto Rican artist had back‑to‑back 2022 global No. 1 hits with “Tití Me Preguntó” and “Me Porto Bonito”?",
-      "choices": ["Bad Bunny", "J Balvin", "Ozuna", "Rauw Alejandro"],
+      "question": "Which Puerto Rican artist had back‑to‑back 2022 global No. 1 hits with Tití Me Preguntó and Me Porto Bonito?",
+      "options": ["Bad Bunny", "J Balvin", "Ozuna", "Rauw Alejandro"],
       "answer": "Bad Bunny"
     },
     {
-      "question": "“Levitating” and “Don't Start Now” are singles from which Dua Lipa album?",
-      "choices": ["Future Nostalgia", "25", "Fine Line", "Prism"],
+      "question": "Levitating and Don't Start Now are singles from which Dua Lipa album?",
+      "options": ["Future Nostalgia", "25", "Fine Line", "Prism"],
       "answer": "Future Nostalgia"
     },
     {
-      "question": "Which rapper won the 2018 Pulitzer Prize for Music for the album “DAMN.”?",
-      "choices": ["Kendrick Lamar", "J. Cole", "Drake", "Kanye West"],
+      "question": "Which rapper won the 2018 Pulitzer Prize for Music for the album DAMN.?",
+      "options": ["Kendrick Lamar", "J. Cole", "Drake", "Kanye West"],
       "answer": "Kendrick Lamar"
     },
     {
-      "question": "The viral 2022 hit “Running Up That Hill” returned to the charts thanks to which Netflix series?",
-      "choices": ["Stranger Things", "Wednesday", "Bridgerton", "Money Heist"],
+      "question": "The viral 2022 hit Running Up That Hill returned to the charts thanks to which Netflix series?",
+      "options": ["Stranger Things", "Wednesday", "Bridgerton", "Money Heist"],
       "answer": "Stranger Things"
     },
     {
-      "question": "Which 2020 Lady Gaga album features the singles “Stupid Love” and “Rain on Me” (with Ariana Grande)?",
-      "choices": ["Chromatica", "Joanne", "ARTPOP", "The Fame Monster"],
+      "question": "Which 2020 Lady Gaga album features the singles Stupid Love and Rain on Me (with Ariana Grande)?",
+      "options": ["Chromatica", "Joanne", "ARTPOP", "The Fame Monster"],
       "answer": "Chromatica"
     },
     {
-      "question": "South African‑born DJ Master KG found worldwide success with which 2020 gospel‑house track?",
-      "choices": ["Jerusalema", "Location", "Soweto Blues", "Kokota"],
+      "question": "South African‑born DJ Master KG found worldwide success with which 2020 gospel‑house track?",
+      "options": ["Jerusalema", "Location", "Soweto Blues", "Kokota"],
       "answer": "Jerusalema"
     },
     {
-      "question": "What 2023 song gave Miley Cyrus her longest‑running No. 1 on the Billboard Hot 100?",
-      "choices": ["Flowers", "Wrecking Ball", "Midnight Sky", "We Can’t Stop"],
+      "question": "What 2023 song gave Miley Cyrus her longest‑running No. 1 on the Billboard Hot 100?",
+      "options": ["Flowers", "Wrecking Ball", "Midnight Sky", "We Can't Stop"],
       "answer": "Flowers"
     },
     {
       "question": "Which hip‑hop duo earned the 2021 Grammy for Best New Artist?",
-      "choices": ["Silk Sonic", "City Girls", "Run The Jewels", "BROCKHAMPTON"],
+      "options": ["Silk Sonic", "City Girls", "Run The Jewels", "BROCKHAMPTON"],
       "answer": "Silk Sonic"
     },
     {
-      "question": "“Peaches” (2021) is a hit single by Justin Bieber featuring Daniel Caesar and which other artist?",
-      "choices": ["Giveon", "Khalid", "The Kid LAROI", "Post Malone"],
+      "question": "Peaches (2021) is a hit single by Justin Bieber featuring Daniel Caesar and which other artist?",
+      "options": ["Giveon", "Khalid", "The Kid LAROI", "Post Malone"],
       "answer": "Giveon"
     },
     {
-      "question": "Which British girl group released “Black Magic” (2015) and “Sweet Melody” (2020)?",
-      "choices": ["Little Mix", "Fifth Harmony", "Girls Aloud", "MUNA"],
+      "question": "Which British girl group released Black Magic (2015) and Sweet Melody (2020)?",
+      "options": ["Little Mix", "Fifth Harmony", "Girls Aloud", "MUNA"],
       "answer": "Little Mix"
     },
     {
-      "question": "Harry Styles won the 2023 Grammy for Album of the Year with…",
-      "choices": ["Harry’s House", "Fine Line", "Watermelon Sugar", "Sign of the Times"],
-      "answer": "Harry’s House"
+      "question": "Harry Styles won the 2023 Grammy for Album of the Year with…",
+      "options": ["Harry's House", "Fine Line", "Watermelon Sugar", "Sign of the Times"],
+      "answer": "Harry's House"
     },
     {
-      "question": "“Uptown Funk” (2014) is a collaboration between Mark Ronson and which singer?",
-      "choices": ["Bruno Mars", "Pharrell Williams", "Anderson .Paak", "Miguel"],
+      "question": "Uptown Funk (2014) is a collaboration between Mark Ronson and which singer?",
+      "options": ["Bruno Mars", "Pharrell Williams", "Anderson .Paak", "Miguel"],
       "answer": "Bruno Mars"
     },
     {
-      "question": "Which EDM producer released the 2018 single “Happier” with Bastille?",
-      "choices": ["Marshmello", "Kygo", "Zedd", "Calvin Harris"],
+      "question": "Which EDM producer released the 2018 single Happier with Bastille?",
+      "options": ["Marshmello", "Kygo", "Zedd", "Calvin Harris"],
       "answer": "Marshmello"
     },
     {
       "question": "Adele’s comeback single in 2021 was titled…",
-      "choices": ["Easy on Me", "Hello", "Skyfall", "Rolling in the Deep"],
+      "options": ["Easy on Me", "Hello", "Skyfall", "Rolling in the Deep"],
       "answer": "Easy on Me"
     },
     {
-      "question": "Which rapper’s 2020 single “Savage Love” (Laxed – Siren Beat) topped charts after a Jason Derulo remix?",
-      "choices": ["Jawsh 685", "24kGoldn", "DaBaby", "Doja Cat"],
+      "question": "Which rapper’s 2020 single Savage Love (Laxed – Siren Beat) topped charts after a Jason Derulo remix?",
+      "options": ["Jawsh 685", "24kGoldn", "DaBaby", "Doja Cat"],
       "answer": "Jawsh 685"
     },
     {
-      "question": "Glass Animals scored a sleeper hit with which 2020 song that hit U.S. No. 1 in 2022?",
-      "choices": ["Heat Waves", "Tokyo Drifting", "Youth", "Life Itself"],
+      "question": "Glass Animals scored a sleeper hit with which 2020 song that hit U.S. No. 1 in 2022?",
+      "options": ["Heat Waves", "Tokyo Drifting", "Youth", "Life Itself"],
       "answer": "Heat Waves"
     },
     {
-      "question": "Which rap artist released the Grammy‑winning album “Call Me If You Get Lost” in 2021?",
-      "choices": ["Tyler, the Creator", "Lil Uzi Vert", "Jay‑Z", "Travis Scott"],
+      "question": "Which rap artist released the Grammy‑winning album Call Me If You Get Lost in 2021?",
+      "options": ["Tyler, the Creator", "Lil Uzi Vert", "Jay‑Z", "Travis Scott"],
       "answer": "Tyler, the Creator"
     },
     {
-      "question": "“Water” became a 2023 global hit for which South African singer?",
-      "choices": ["Tyla", "Elaine", "Nomcebo Zikode", "Sho Madjozi"],
+      "question": "Water became a 2023 global hit for which South African singer?",
+      "options": ["Tyla", "Elaine", "Nomcebo Zikode", "Sho Madjozi"],
       "answer": "Tyla"
     },
     {
-      "question": "Which rock band reunited to release the 2020 single “Shame Shame” ahead of the album “Medicine at Midnight”?",
-      "choices": ["Foo Fighters", "Kings of Leon", "Green Day", "Imagine Dragons"],
+      "question": "Which rock band reunited to release the 2020 single Shame Shame ahead of the album Medicine at Midnight?",
+      "options": ["Foo Fighters", "Kings of Leon", "Green Day", "Imagine Dragons"],
       "answer": "Foo Fighters"
     },
     {
-      "question": "Doja Cat’s first Billboard Hot 100 No. 1 (as a lead artist) was…",
-      "choices": ["Say So", "Kiss Me More", "Woman", "Paint the Town Red"],
+      "question": "Doja Cat’s first Billboard Hot 100 No. 1 (as a lead artist) was…",
+      "options": ["Say So", "Kiss Me More", "Woman", "Paint the Town Red"],
       "answer": "Say So"
     },
     {
-      "question": "Which Latin pop singer’s 2017 single “Despacito” tied the record for most weeks at U.S. No. 1?",
-      "choices": ["Luis Fonsi", "Maluma", "Sebastián Yatra", "Carlos Vives"],
+      "question": "Which Latin pop singer’s 2017 single Despacito tied the record for most weeks at U.S. No. 1?",
+      "options": ["Luis Fonsi", "Maluma", "Sebastián Yatra", "Carlos Vives"],
       "answer": "Luis Fonsi"
     },
     {
-      "question": "The 2019 blockbuster movie soundtrack “Shallow” was performed by Lady Gaga and…",
-      "choices": ["Bradley Cooper", "Mark Ronson", "Beyoncé", "Adam Lambert"],
+      "question": "The 2019 blockbuster movie soundtrack Shallow was performed by Lady Gaga and…",
+      "options": ["Bradley Cooper", "Mark Ronson", "Beyoncé", "Adam Lambert"],
       "answer": "Bradley Cooper"
     },
     {
-      "question": "Which TikTok‑viral 2020 single by SAINt JHN was remixed by Imanbek to reach global charts?",
-      "choices": ["Roses", "Mood", "Blueberry Faygo", "Supalonely"],
+      "question": "Which TikTok‑viral 2020 single by SAINt JHN was remixed by Imanbek to reach global charts?",
+      "options": ["Roses", "Mood", "Blueberry Faygo", "Supalonely"],
       "answer": "Roses"
     },
     {
-      "question": "Which pop artist released the 2016 album “Purpose” featuring hits like “Sorry” and “Love Yourself”?",
-      "choices": ["Justin Bieber", "Shawn Mendes", "Charlie Puth", "Niall Horan"],
+      "question": "Which pop artist released the 2016 album Purpose featuring hits like Sorry and Love Yourself?",
+      "options": ["Justin Bieber", "Shawn Mendes", "Charlie Puth", "Niall Horan"],
       "answer": "Justin Bieber"
     },
     {
-      "question": "“Old Town Road,” a crossover country‑rap hit in 2019, was performed by Lil Nas X and which featured artist on the remix?",
-      "choices": ["Billy Ray Cyrus", "Miley Cyrus", "Tim McGraw", "Blake Shelton"],
+      "question": "Old Town Road, a crossover country‑rap hit in 2019, was performed by Lil Nas X and which featured artist on the remix?",
+      "options": ["Billy Ray Cyrus", "Miley Cyrus", "Tim McGraw", "Blake Shelton"],
       "answer": "Billy Ray Cyrus"
     },
     {
-      "question": "Who released the 2020 album “Future Nostalgia,” praised for its disco revival sound?",
-      "choices": ["Dua Lipa", "Kylie Minogue", "Jessie Ware", "Lady Gaga"],
+      "question": "Who released the 2020 album Future Nostalgia, praised for its disco revival sound?",
+      "options": ["Dua Lipa", "Kylie Minogue", "Jessie Ware", "Lady Gaga"],
       "answer": "Dua Lipa"
     },
     {
-      "question": "Cardi B’s debut 2017 No. 1 single is…",
-      "choices": ["Bodak Yellow", "WAP", "I Like It", "Up"],
+      "question": "Cardi B's debut 2017 No. 1 single is…",
+      "options": ["Bodak Yellow", "WAP", "I Like It", "Up"],
       "answer": "Bodak Yellow"
     },
     {
-      "question": "Which British singer had a 2015 breakout with the single “Hold Back the River”?",
-      "choices": ["James Bay", "George Ezra", "Hozier", "Rag’n’Bone Man"],
+      "question": "Which British singer had a 2015 breakout with the single Hold Back the River?",
+      "options": ["James Bay", "George Ezra", "Hozier", "Rag'n'Bone Man"],
       "answer": "James Bay"
     },
     {
-      "question": "The 2022 FIFA World Cup anthem “Dreamers” is performed by BTS member…",
-      "choices": ["Jungkook", "RM", "V", "Jimin"],
+      "question": "The 2022 FIFA World Cup anthem Dreamers is performed by BTS member…",
+      "options": ["Jungkook", "RM", "V", "Jimin"],
       "answer": "Jungkook"
     },
     {
-      "question": "Which electro‑pop duo released the 2013 viral hit “#SELFIE”?",
-      "choices": ["The Chainsmokers", "Disclosure", "Galantis", "ZHU"],
+      "question": "Which electro‑pop duo released the 2013 viral hit #SELFIE?",
+      "options": ["The Chainsmokers", "Disclosure", "Galantis", "ZHU"],
       "answer": "The Chainsmokers"
     },
     {
-      "question": "“Bad Habits” (2021) spent eleven consecutive weeks at UK No. 1 for which artist?",
-      "choices": ["Ed Sheeran", "Sam Smith", "Lewis Capaldi", "George Ezra"],
+      "question": "Bad Habits (2021) spent eleven consecutive weeks at UK No. 1 for which artist?",
+      "options": ["Ed Sheeran", "Sam Smith", "Lewis Capaldi", "George Ezra"],
       "answer": "Ed Sheeran"
     },
     {
-      "question": "Which R&B singer released the critically acclaimed 2016 album “Ctrl” and returned in 2022 with the album “SOS”?",
-      "choices": ["SZA", "H.E.R.", "Jhené Aiko", "Summer Walker"],
+      "question": "Which R&B singer released the critically acclaimed 2016 album Ctrl and returned in 2022 with the album SOS?",
+      "options": ["SZA", "H.E.R.", "Jhené Aiko", "Summer Walker"],
       "answer": "SZA"
     },
     {
-      "question": "“Rockstar” topped charts in 2017 for Post Malone featuring which rapper?",
-      "choices": ["21 Savage", "Quavo", "Travis Scott", "Lil Uzi Vert"],
+      "question": "Rockstar topped charts in 2017 for Post Malone featuring which rapper?",
+      "options": ["21 Savage", "Quavo", "Travis Scott", "Lil Uzi Vert"],
       "answer": "21 Savage"
     },
     {
-      "question": "Which Australian artist scored a 2014 global hit with “Chandelier”?",
-      "choices": ["Sia", "Iggy Azalea", "Tones and I", "Gotye"],
+      "question": "Which Australian artist scored a 2014 global hit with Chandelier?",
+      "options": ["Sia", "Iggy Azalea", "Tones and I", "Gotye"],
       "answer": "Sia"
     },
     {
-        "question": "Which 2010 single launched Bruno Mars' solo career and topped the Billboard Hot 100 for four weeks?",
-        "choices": ["Just the Way You Are", "Grenade", "Locked Out of Heaven", "24K Magic"],
-        "answer": "Just the Way You Are"
-      },
-      {
-        "question": "What 2014 single by Meghan Trainor spent eight weeks at U.S. No. 1 with a body‑positivity message?",
-        "choices": ["All About That Bass", "Dear Future Husband", "Lips Are Movin", "NO"],
-        "answer": "All About That Bass"
-      },
-      {
-        "question": "Which 2018 smash hit by Drake popularized the viral #InMyFeelingsChallenge?",
-        "choices": ["In My Feelings", "God's Plan", "One Dance", "Hotline Bling"],
-        "answer": "In My Feelings"
-      },
-      {
-        "question": "Which electronic duo collaborated with Pharrell Williams on the 2013 single “Get Lucky”?",
-        "choices": ["Daft Punk", "The Chainsmokers", "Disclosure", "ZHU"],
-        "answer": "Daft Punk"
-      },
-      {
-        "question": "Charli XCX’s 2022 album is titled…",
-        "choices": ["Crash", "Pop 2", "How I'm Feeling Now", "Charli"],
-        "answer": "Crash"
-      },
-      {
-        "question": "Which American singer released the 2013 power ballad “Wrecking Ball” that featured a controversial music video?",
-        "choices": ["Miley Cyrus", "Katy Perry", "Selena Gomez", "Demi Lovato"],
-        "answer": "Miley Cyrus"
-      },
-      {
-        "question": "The 2016 single “Closer” features The Chainsmokers and which pop singer?",
-        "choices": ["Halsey", "Rihanna", "Lorde", "Julia Michaels"],
-        "answer": "Halsey"
-      },
-      {
-        "question": "Which boy band scored the 2013 hit “Story of My Life”?",
-        "choices": ["One Direction", "5 Seconds of Summer", "Jonas Brothers", "Big Time Rush"],
-        "answer": "One Direction"
-      },
-      {
-        "question": "Bad Bunny’s 2023 album title translates to “Nobody Knows What’s Going to Happen Tomorrow.” What is its Spanish title?",
-        "choices": ["Nadie Sabe Lo Que Va a Pasar Mañana", "Un Verano Sin Ti", "YHLQMDLG", "El Último Tour del Mundo"],
-        "answer": "Nadie Sabe Lo Que Va a Pasar Mañana"
-      },
-      {
-        "question": "Which BTS song debuted at No. 1 on the Billboard Hot 100 in 2021 with a retro dance‑pop sound and English lyrics?",
-        "choices": ["Butter", "Boy With Luv", "Life Goes On", "ON"],
-        "answer": "Butter"
-      },
-      {
-        "question": "What 2010 album won Arcade Fire the Grammy for Album of the Year?",
-        "choices": ["The Suburbs", "Reflektor", "Everything Now", "Neon Bible"],
-        "answer": "The Suburbs"
-      },
-      {
-        "question": "Which British singer‑songwriter released the soulful 2014 debut single “Stay With Me”?",
-        "choices": ["Sam Smith", "George Ezra", "Rag’n’Bone Man", "Lewis Capaldi"],
-        "answer": "Sam Smith"
-      },
-      {
-        "question": "What 2022 single gave Nigerian artist Rema a global breakthrough when Selena Gomez joined the remix?",
-        "choices": ["Calm Down", "Dumebi", "Charm", "Soundgasm"],
-        "answer": "Calm Down"
-      },
-      {
-        "question": "Who topped the UK charts for ten weeks in 2019 with “Someone You Loved”?",
-        "choices": ["Lewis Capaldi", "James Bay", "Tom Walker", "Dermot Kennedy"],
-        "answer": "Lewis Capaldi"
-      },
-      {
-        "question": "Which 2015 Major Lazer & DJ Snake track became Spotify’s most‑streamed song until 2017?",
-        "choices": ["Lean On", "Cold Water", "Run Up", "Light It Up"],
-        "answer": "Lean On"
-      },
-      {
-        "question": "In 2020, which American rock band released “Orphans” and “Champion of the World” on the album “Everyday Life”?",
-        "choices": ["Coldplay", "Imagine Dragons", "Kings of Leon", "Maroon 5"],
-        "answer": "Coldplay"
-      },
-      {
-        "question": "Which Australian indie act scored a 2013 viral hit with “Riptide”?",
-        "choices": ["Vance Joy", "Gotye", "Tame Impala", "Dean Lewis"],
-        "answer": "Vance Joy"
-      },
-      {
-        "question": "Which 2012 Psy track became the first YouTube video to surpass 1 billion views?",
-        "choices": ["Gangnam Style", "Gentleman", "Daddy", "Hangover"],
-        "answer": "Gangnam Style"
-      },
-      {
-        "question": "“Starboy” is a 2016 collaboration between The Weeknd and which French electronic duo?",
-        "choices": ["Daft Punk", "Justice", "Air", "Modjo"],
-        "answer": "Daft Punk"
-      },
-      {
-        "question": "Which 2021 Måneskin cover of an Elvis Presley classic went viral on TikTok and U.S. radio?",
-        "choices": ["Beggin’", "Supermodel", "I Wanna Be Your Slave", "Zitti e buoni"],
-        "answer": "Beggin’"
-      },
-      {
-        "question": "Which Latin trap hit featuring Cardi B and J Balvin became Spotify’s most‑streamed song of 2018?",
-        "choices": ["I Like It", "Taki Taki", "MIA", "Girls Like You"],
-        "answer": "I Like It"
-      },
-      {
-        "question": "Who released the 2023 single “vampire,” the lead track from the album “GUTS”?",
-        "choices": ["Olivia Rodrigo", "Billie Eilish", "Sabrina Carpenter", "Tate McRae"],
-        "answer": "Olivia Rodrigo"
-      },
-      {
-        "question": "Which 2018 folk‑pop hit by Ben Howard features the lyric “Oh, I was screaming at my father, and you were screaming at me”?",
-        "choices": ["Nica Libres at Dusk", "Old Pine", "Only Love", "Keep Your Head Up"],
-        "answer": "Nica Libres at Dusk"
-      },
-      {
-        "question": "Which DJ’s 2011 single “Levels” helped bring EDM into U.S. mainstream charts?",
-        "choices": ["Avicii", "Calvin Harris", "David Guetta", "Zedd"],
-        "answer": "Avicii"
-      },
-      {
-        "question": "Which 2015 Adele single sold more than 1 million U.S. downloads in its first week?",
-        "choices": ["Hello", "Send My Love", "When We Were Young", "Easy on Me"],
-        "answer": "Hello"
-      },
-      {
-        "question": "Which 2022 song by Beyoncé celebrates ballroom culture and samples Robin S.'s 1990 hit “Show Me Love”?",
-        "choices": ["Break My Soul", "CUFF IT", "Alien Superstar", "Church Girl"],
-        "answer": "Break My Soul"
-      },
-      {
-        "question": "The 2019 EP “Map of the Soul: Persona” is by which Korean group?",
-        "choices": ["BTS", "BLACKPINK", "TXT", "SEVENTEEN"],
-        "answer": "BTS"
-      },
-      {
-        "question": "Which rapper’s 2016 hit “Panda” debuted at No. 1, making him the first rapper since 2009 to do so with a debut single?",
-        "choices": ["Desiigner", "Lil Yachty", "Lil Pump", "21 Savage"],
-        "answer": "Desiigner"
-      },
-      {
-        "question": "“Stressed Out” and “Ride” were radio singles from which 2015 Twenty One Pilots album?",
-        "choices": ["Blurryface", "Vessel", "Trench", "Scaled and Icy"],
-        "answer": "Blurryface"
-      },
-      {
-        "question": "Which 2020 single by BLACKPINK and Selena Gomez is named after a dessert?",
-        "choices": ["Ice Cream", "How You Like That", "Pink Venom", "Kill This Love"],
-        "answer": "Ice Cream"
-      },
-      {
-        "question": "Who performed the 2021 hit “Stay” alongside Justin Bieber?",
-        "choices": ["The Kid LAROI", "Giveon", "Charlie Puth", "Shawn Mendes"],
-        "answer": "The Kid LAROI"
-      },
-      {
-        "question": "Which afro‑fusion star released “Love, Damini” in 2022, featuring the single “Last Last”?",
-        "choices": ["Burna Boy", "Wizkid", "Tems", "CKay"],
-        "answer": "Burna Boy"
-      },
-      {
-        "question": "Which 2017 EDM‑pop collaboration between Zedd and Alessia Cara won the Grammy for Best Dance Recording?",
-        "choices": ["Stay", "The Middle", "Clarity", "Spectrum"],
-        "answer": "Stay"
-      },
-      {
-        "question": "“Radioactive,” a 2012 rock anthem, is performed by…",
-        "choices": ["Imagine Dragons", "Coldplay", "Muse", "The Killers"],
-        "answer": "Imagine Dragons"
-      },
-      {
-        "question": "Which 2019 country‑rap viral hit by Blanco Brown invites listeners to a “footwork” dance?",
-        "choices": ["The Git Up", "Old Town Road", "Fancy Like", "Ride It"],
-        "answer": "The Git Up"
-      },
-      {
-        "question": "Which artist earned her first Billboard Hot 100 No. 1 with the 2018 single “Thank U, Next”?",
-        "choices": ["Ariana Grande", "Demi Lovato", "Selena Gomez", "Camila Cabello"],
-        "answer": "Ariana Grande"
-      },
-      {
-        "question": "Which Latin girl group became the first female K‑pop act to headline Coachella in 2019?",
-        "choices": ["BLACKPINK", "Red Velvet", "TWICE", "Girls' Generation"],
-        "answer": "BLACKPINK"
-      },
-      {
-        "question": "“Can’t Stop the Feeling!” is a 2016 disco‑pop single recorded for which animated film?",
-        "choices": ["Trolls", "Sing", "Moana", "Zootopia"],
-        "answer": "Trolls"
-      },
-      {
-        "question": "Which Scottish DJ released the funk‑inspired 2017 hit “Slide” featuring Frank Ocean and Migos?",
-        "choices": ["Calvin Harris", "Kygo", "David Guetta", "Sigala"],
-        "answer": "Calvin Harris"
-      },
-      {
-        "question": "Who released the 2023 viral hit “Paint the Town Red,” which samples Dionne Warwick’s “Walk On By”?",
-        "choices": ["Doja Cat", "Ice Spice", "Nicki Minaj", "Latto"],
-        "answer": "Doja Cat"
-      },
-      {
-        "question": "Which 2011 single earned Gotye and Kimbra a Grammy for Record of the Year?",
-        "choices": ["Somebody That I Used to Know", "Eyes Wide Open", "Hearts a Mess", "Bronte"],
-        "answer": "Somebody That I Used to Know"
-      },
-      {
-        "question": "Which Puerto Rican–Colombian collaboration dominated 2023 with “TQG”?",
-        "choices": ["Karol G & Shakira", "Rauw Alejandro & Rosalía", "Bad Bunny & Karol G", "Maluma & J Balvin"],
-        "answer": "Karol G & Shakira"
-      },
-      {
-        "question": "Which 2012 Lana Del Rey song went viral again in 2023 after a sped‑up remix trend on TikTok?",
-        "choices": ["Summertime Sadness", "Video Games", "Born to Die", "Young and Beautiful"],
-        "answer": "Summertime Sadness"
-      },
-      {
-        "question": "Which blues‑rock singer released the 2018 hit “Ain’t Nobody Takin My Baby” and the viral 2021 single “Infinity”?",
-        "choices": ["BoyWithUke", "Aries", "Sub Urban", "Nothing But Thieves"],
-        "answer": "BoyWithUke"
-      },
-      {
-        "question": "Who won Eurovision 2023 with the song “Tattoo,” becoming only the second person to win the contest twice?",
-        "choices": ["Loreen", "Måneskin", "Netta", "Duncan Laurence"],
-        "answer": "Loreen"
-      },
-      {
-        "question": "Which 2021 EDM‑pop track by Swedish House Mafia and The Weeknd is titled after a mode on record players?",
-        "choices": ["Moth to a Flame", "Save Your Tears", "Don’t Go Yet", "Heaven Takes You Home"],
-        "answer": "Moth to a Flame"
-      },
-      {
-        "question": "Which Canadian artist released the 2020 album “After Hours,” featuring the hit single “Save Your Tears”?",
-        "choices": ["The Weeknd", "Drake", "Shawn Mendes", "Tory Lanez"],
-        "answer": "The Weeknd"
-      },
-      {
-        "question": "Which 2020 song by Jawsh 685 and Jason Derulo sparked a viral dance trend on TikTok?",
-        "choices": ["Savage Love", "Banana", "Say So", "Goosebumps"],
-        "answer": "Savage Love"
-      },
-      {
-        "question": "Which rock band’s 2023 single “Boy” marked their comeback after a five‑year hiatus?",
-        "choices": ["The Killers", "Arctic Monkeys", "Linkin Park", "The Smashing Pumpkins"],
-        "answer": "The Killers"
-      },
-      {
-        "question": "Which rapper’s 2023 album “UTOPIA” debuted at No. 1 on the Billboard 200?",
-        "choices": ["Travis Scott", "Lil Uzi Vert", "Metro Boomin", "Playboi Carti"],
-        "answer": "Travis Scott"
-      },
-      {
-        "question": "Which 2018 song by Bebe Rexha and Florida Georgia Line achieved record‑breaking weeks at No. 1 on the Hot Country Songs chart?",
-        "choices": ["Meant to Be", "Me, Myself & I", "I Got You", "In the Name of Love"],
-        "answer": "Meant to Be"
-      },
-      {
-        "question": "Which 2019 single by Camila Cabello and Shawn Mendes became the most streamed song by a male‑female duo that year?",
-        "choices": ["Señorita", "Havana", "My Oh My", "I Know What You Did Last Summer"],
-        "answer": "Señorita"
-      },
-      {
-        "question": "Which South Korean girl group released the hit single “Next Level” in 2021, sampling the “Fast & Furious” soundtrack?",
-        "choices": ["aespa", "ITZY", "NewJeans", "LE SSERAFIM"],
-        "answer": "aespa"
-      },
-      {
-        "question": "Which 2013 hit by Ylvis humorously asks, “What does the fox say?”",
-        "choices": ["The Fox", "Barbra Streisand", "Nyan Cat", "PPAP"],
-        "answer": "The Fox"
-      },
-      {
-        "question": "Which American singer released the chart‑topping single “Praying” in 2017 after a hiatus?",
-        "choices": ["Kesha", "P!nk", "Kelly Clarkson", "Meghan Trainor"],
-        "answer": "Kesha"
-      },
-      {
-        "question": "Who headlined the 2024 Super Bowl halftime show, becoming the first country artist to do so in over two decades?",
-        "choices": ["Taylor Swift", "Luke Combs", "Carrie Underwood", "Chris Stapleton"],
-        "answer": "Luke Combs"
-      },
-      {
-        "question": "Which 2011 electronic‑pop anthem by LMFAO features the lyric “Everyday I'm shufflin'”?",
-        "choices": ["Party Rock Anthem", "Sexy and I Know It", "Shots", "Champagne Showers"],
-        "answer": "Party Rock Anthem"
-      },
-      {
-        "question": "Which song by Hozier went viral on TikTok in 2023, leading to a chart resurgence nine years after its 2014 release?",
-        "choices": ["Take Me to Church", "Work Song", "From Eden", "Cherry Wine"],
-        "answer": "Take Me to Church"
-      },
-      {
-        "question": "Which British rapper scored his first U.S. hit in 2020 with the single “Own It” featuring Ed Sheeran and Burna Boy?",
-        "choices": ["Stormzy", "Dave", "Skepta", "AJ Tracey"],
-        "answer": "Stormzy"
-      },
-      {
-        "question": "Which indie‑pop duo released the dreamy 2012 single “Fireflies” that topped the Billboard Hot 100?",
-        "choices": ["Owl City", "Capital Cities", "MGMT", "Empire of the Sun"],
-        "answer": "Owl City"
-      },
-      {
-        "question": "Which 2020 single by French DJ Regard and singer RAYE samples the 2004 song “Ride It” by Jay Sean?",
-        "choices": ["Secrets", "Breaking Me", "Head & Heart", "Kings & Queens"],
-        "answer": "Secrets"
-      },
-      {
-        "question": "Which American band released the song “Believer” in 2017, later becoming an anthem for ESPN playlists?",
-        "choices": ["Imagine Dragons", "OneRepublic", "X Ambassadors", "Bastille"],
-        "answer": "Imagine Dragons"
-      },
-      {
-        "question": "Which 2022 dance‑pop hit by David Guetta and Bebe Rexha interpolates Eiffel 65’s “Blue (Da Ba Dee)”?",
-        "choices": ["I'm Good (Blue)", "Let’s Love", "Say My Name", "Family"],
-        "answer": "I'm Good (Blue)"
-      },
-      {
-        "question": "Who released the critically acclaimed 2014 debut album “LP1,” blending alternative R&B and art pop?",
-        "choices": ["FKA twigs", "Banks", "Kehlani", "Jhené Aiko"],
-        "answer": "FKA twigs"
-      }
+      "question": "Which 2010 single launched Bruno Mars' solo career and topped the Billboard Hot 100 for four weeks?",
+      "options": ["Just the Way You Are", "Grenade", "Locked Out of Heaven", "24K Magic"],
+      "answer": "Just the Way You Are"
+    },
+    {
+      "question": "What 2014 single by Meghan Trainor spent eight weeks at U.S. No. 1 with a body‑positivity message?",
+      "options": ["All About That Bass", "Dear Future Husband", "Lips Are Movin", "NO"],
+      "answer": "All About That Bass"
+    },
+    {
+      "question": "Which 2018 smash hit by Drake popularized the viral #InMyFeelingsChallenge?",
+      "options": ["In My Feelings", "God's Plan", "One Dance", "Hotline Bling"],
+      "answer": "In My Feelings"
+    },
+    {
+      "question": "Which electronic duo collaborated with Pharrell Williams on the 2013 single Get Lucky?",
+      "options": ["Daft Punk", "The Chainsmokers", "Disclosure", "ZHU"],
+      "answer": "Daft Punk"
+    },
+    {
+      "question": "Charli XCX’s 2022 album is titled…",
+      "options": ["Crash", "Pop 2", "How I'm Feeling Now", "Charli"],
+      "answer": "Crash"
+    },
+    {
+      "question": "Which American singer released the 2013 power ballad Wrecking Ball that featured a controversial music video?",
+      "options": ["Miley Cyrus", "Katy Perry", "Selena Gomez", "Demi Lovato"],
+      "answer": "Miley Cyrus"
+    },
+    {
+      "question": "The 2016 single Closer features The Chainsmokers and which pop singer?",
+      "options": ["Halsey", "Rihanna", "Lorde", "Julia Michaels"],
+      "answer": "Halsey"
+    },
+    {
+      "question": "Which boy band scored the 2013 hit Story of My Life?",
+      "options": ["One Direction", "5 Seconds of Summer", "Jonas Brothers", "Big Time Rush"],
+      "answer": "One Direction"
+    },
+    {
+      "question": "Bad Bunny's 2023 album title translates to 'Nobody Knows What’s Going to Happen Tomorrow.' What is its Spanish title?",
+      "options": ["Nadie Sabe Lo Que Va a Pasar Mañana", "Un Verano Sin Ti", "YHLQMDLG", "El Último Tour del Mundo"],
+      "answer": "Nadie Sabe Lo Que Va a Pasar Mañana"
+    },
+    {
+      "question": "Which BTS song debuted at No. 1 on the Billboard Hot 100 in 2021 with a retro dance‑pop sound and English lyrics?",
+      "options": ["Butter", "Boy With Luv", "Life Goes On", "ON"],
+      "answer": "Butter"
+    },
+    {
+      "question": "What 2010 album won Arcade Fire the Grammy for Album of the Year?",
+      "options": ["The Suburbs", "Reflektor", "Everything Now", "Neon Bible"],
+      "answer": "The Suburbs"
+    },
+    {
+      "question": "Which British singer‑songwriter released the soulful 2014 debut single Stay With Me?",
+      "options": ["Sam Smith", "George Ezra", "Rag'n'Bone Man", "Lewis Capaldi"],
+      "answer": "Sam Smith"
+    },
+    {
+      "question": "What 2022 single gave Nigerian artist Rema a global breakthrough when Selena Gomez joined the remix?",
+      "options": ["Calm Down", "Dumebi", "Charm", "Soundgasm"],
+      "answer": "Calm Down"
+    },
+    {
+      "question": "Who topped the UK charts for ten weeks in 2019 with Someone You Loved?",
+      "options": ["Lewis Capaldi", "James Bay", "Tom Walker", "Dermot Kennedy"],
+      "answer": "Lewis Capaldi"
+    },
+    {
+      "question": "Which 2015 Major Lazer & DJ Snake track became Spotify’s most‑streamed song until 2017?",
+      "options": ["Lean On", "Cold Water", "Run Up", "Light It Up"],
+      "answer": "Lean On"
+    },
+    {
+      "question": "In 2020, which American rock band released Orphans and Champion of the World on the album Everyday Life?",
+      "options": ["Coldplay", "Imagine Dragons", "Kings of Leon", "Maroon 5"],
+      "answer": "Coldplay"
+    },
+    {
+      "question": "Which Australian indie act scored a 2013 viral hit with Riptide?",
+      "options": ["Vance Joy", "Gotye", "Tame Impala", "Dean Lewis"],
+      "answer": "Vance Joy"
+    },
+    {
+      "question": "Which 2012 Psy track became the first YouTube video to surpass 1 billion views?",
+      "options": ["Gangnam Style", "Gentleman", "Daddy", "Hangover"],
+      "answer": "Gangnam Style"
+    },
+    {
+      "question": "Starboy is a 2016 collaboration between The Weeknd and which French electronic duo?",
+      "options": ["Daft Punk", "Justice", "Air", "Modjo"],
+      "answer": "Daft Punk"
+    },
+    {
+      "question": "Which 2021 Måneskin cover of an Elvis Presley classic went viral on TikTok and U.S. radio?",
+      "options": ["Beggin'", "Supermodel", "I Wanna Be Your Slave", "Zitti e buoni"],
+      "answer": "Beggin'"
+    },
+    {
+      "question": "Which Latin trap hit featuring Cardi B and J Balvin became Spotify’s most‑streamed song of 2018?",
+      "options": ["I Like It", "Taki Taki", "MIA", "Girls Like You"],
+      "answer": "I Like It"
+    },
+    {
+      "question": "Who released the 2023 single vampire, the lead track from the album GUTS?",
+      "options": ["Olivia Rodrigo", "Billie Eilish", "Sabrina Carpenter", "Tate McRae"],
+      "answer": "Olivia Rodrigo"
+    },
+    {
+      "question": "Which 2018 folk‑pop hit by Ben Howard features the lyric 'Oh, I was screaming at my father, and you were screaming at me'?",
+      "options": ["Nica Libres at Dusk", "Old Pine", "Only Love", "Keep Your Head Up"],
+      "answer": "Nica Libres at Dusk"
+    },
+    {
+      "question": "Which DJ’s 2011 single Levels helped bring EDM into U.S. mainstream charts?",
+      "options": ["Avicii", "Calvin Harris", "David Guetta", "Zedd"],
+      "answer": "Avicii"
+    },
+    {
+      "question": "Which 2015 Adele single sold more than 1 million U.S. downloads in its first week?",
+      "options": ["Hello", "Send My Love", "When We Were Young", "Easy on Me"],
+      "answer": "Hello"
+    },
+    {
+      "question": "Which 2022 song by Beyoncé celebrates ballroom culture and samples Robin S.'s 1990 hit Show Me Love?",
+      "options": ["Break My Soul", "CUFF IT", "Alien Superstar", "Church Girl"],
+      "answer": "Break My Soul"
+    },
+    {
+      "question": "The 2019 EP Map of the Soul: Persona is by which Korean group?",
+      "options": ["BTS", "BLACKPINK", "TXT", "SEVENTEEN"],
+      "answer": "BTS"
+    },
+    {
+      "question": "Which rapper's 2016 hit Panda debuted at No. 1, making him the first rapper since 2009 to do so with a debut single?",
+      "options": ["Desiigner", "Lil Yachty", "Lil Pump", "21 Savage"],
+      "answer": "Desiigner"
+    },
+    {
+      "question": "Stressed Out and Ride were radio singles from which 2015 Twenty One Pilots album?",
+      "options": ["Blurryface", "Vessel", "Trench", "Scaled and Icy"],
+      "answer": "Blurryface"
+    },
+    {
+      "question": "Which 2020 single by BLACKPINK and Selena Gomez is named after a dessert?",
+      "options": ["Ice Cream", "How You Like That", "Pink Venom", "Kill This Love"],
+      "answer": "Ice Cream"
+    },
+    {
+      "question": "Who performed the 2021 hit Stay alongside Justin Bieber?",
+      "options": ["The Kid LAROI", "Giveon", "Charlie Puth", "Shawn Mendes"],
+      "answer": "The Kid LAROI"
+    },
+    {
+      "question": "Which afro‑fusion star released Love, Damini in 2022, featuring the single Last Last?",
+      "options": ["Burna Boy", "Wizkid", "Tems", "CKay"],
+      "answer": "Burna Boy"
+    },
+    {
+      "question": "Which 2017 EDM‑pop collaboration between Zedd and Alessia Cara won the Grammy for Best Dance Recording?",
+      "options": ["Stay", "The Middle", "Clarity", "Spectrum"],
+      "answer": "Stay"
+    },
+    {
+      "question": "Radioactive, a 2012 rock anthem, is performed by…",
+      "options": ["Imagine Dragons", "Coldplay", "Muse", "The Killers"],
+      "answer": "Imagine Dragons"
+    },
+    {
+      "question": "Which 2019 country‑rap viral hit by Blanco Brown invites listeners to a footwork dance?",
+      "options": ["The Git Up", "Old Town Road", "Fancy Like", "Ride It"],
+      "answer": "The Git Up"
+    },
+    {
+      "question": "Which artist earned her first Billboard Hot 100 No. 1 with the 2018 single Thank U, Next?",
+      "options": ["Ariana Grande", "Demi Lovato", "Selena Gomez", "Camila Cabello"],
+      "answer": "Ariana Grande"
+    },
+    {
+      "question": "Which Latin girl group became the first female K‑pop act to headline Coachella in 2019?",
+      "options": ["BLACKPINK", "Red Velvet", "TWICE", "Girls' Generation"],
+      "answer": "BLACKPINK"
+    },
+    {
+      "question": "Can't Stop the Feeling! is a 2016 disco‑pop single recorded for which animated film?",
+      "options": ["Trolls", "Sing", "Moana", "Zootopia"],
+      "answer": "Trolls"
+    },
+    {
+      "question": "Which Scottish DJ released the funk‑inspired 2017 hit Slide featuring Frank Ocean and Migos?",
+      "options": ["Calvin Harris", "Kygo", "David Guetta", "Sigala"],
+      "answer": "Calvin Harris"
+    },
+    {
+      "question": "Who released the 2023 viral hit Paint the Town Red, which samples Dionne Warwick’s Walk On By?",
+      "options": ["Doja Cat", "Ice Spice", "Nicki Minaj", "Latto"],
+      "answer": "Doja Cat"
+    },
+    {
+      "question": "Which 2011 single earned Gotye and Kimbra a Grammy for Record of the Year?",
+      "options": ["Somebody That I Used to Know", "Eyes Wide Open", "Hearts a Mess", "Bronte"],
+      "answer": "Somebody That I Used to Know"
+    },
+    {
+      "question": "Which rock band's 2023 single Boy marked their comeback after a five‑year hiatus?",
+      "options": ["The Killers", "Arctic Monkeys", "Linkin Park", "The Smashing Pumpkins"],
+      "answer": "The Killers"
+    },
+    {
+      "question": "Which rapper's 2023 album UTOPIA debuted at No. 1 on the Billboard 200?",
+      "options": ["Travis Scott", "Lil Uzi Vert", "Metro Boomin", "Playboi Carti"],
+      "answer": "Travis Scott"
+    },
+    {
+      "question": "Which 2018 song by Bebe Rexha and Florida Georgia Line achieved record‑breaking weeks at No. 1 on the Hot Country Songs chart?",
+      "options": ["Meant to Be", "Me, Myself & I", "I Got You", "In the Name of Love"],
+      "answer": "Meant to Be"
+    },
+    {
+      "question": "Which 2019 single by Camila Cabello and Shawn Mendes became the most streamed song by a male‑female duo that year?",
+      "options": ["Señorita", "Havana", "My Oh My", "I Know What You Did Last Summer"],
+      "answer": "Señorita"
+    },
+    {
+      "question": "Which South Korean girl group released the hit single Next Level in 2021, sampling the Fast & Furious soundtrack?",
+      "options": ["aespa", "ITZY", "NewJeans", "LE SSERAFIM"],
+      "answer": "aespa"
+    },
+    {
+      "question": "Which 2013 hit by Ylvis humorously asks, What does the fox say?",
+      "options": ["The Fox", "Barbra Streisand", "Nyan Cat", "PPAP"],
+      "answer": "The Fox"
+    },
+    {
+      "question": "Which American singer released the chart‑topping single Praying in 2017 after a hiatus?",
+      "options": ["Kesha", "P!nk", "Kelly Clarkson", "Meghan Trainor"],
+      "answer": "Kesha"
+    },
+    {
+      "question": "Who headlined the 2024 Super Bowl halftime show, becoming the first country artist to do so in over two decades?",
+      "options": ["Taylor Swift", "Luke Combs", "Carrie Underwood", "Chris Stapleton"],
+      "answer": "Luke Combs"
+    },
+    {
+      "question": "Which 2011 electronic‑pop anthem by LMFAO features the lyric Everyday I'm shufflin'?",
+      "options": ["Party Rock Anthem", "Sexy and I Know It", "Shots", "Champagne Showers"],
+      "answer": "Party Rock Anthem"
+    },
+    {
+      "question": "Which song by Hozier went viral on TikTok in 2023, leading to a chart resurgence nine years after its 2014 release?",
+      "options": ["Take Me to Church", "Work Song", "From Eden", "Cherry Wine"],
+      "answer": "Take Me to Church"
+    },
+    {
+      "question": "Which British rapper scored his first U.S. hit in 2020 with the single Own It featuring Ed Sheeran and Burna Boy?",
+      "options": ["Stormzy", "Dave", "Skepta", "AJ Tracey"],
+      "answer": "Stormzy"
+    },
+    {
+      "question": "Which indie‑pop duo released the dreamy 2012 single Fireflies that topped the Billboard Hot 100?",
+      "options": ["Owl City", "Capital Cities", "MGMT", "Empire of the Sun"],
+      "answer": "Owl City"
+    },
+    {
+      "question": "Which 2020 single by French DJ Regard and singer RAYE samples the 2004 song Ride It by Jay Sean?",
+      "options": ["Secrets", "Breaking Me", "Head & Heart", "Kings & Queens"],
+      "answer": "Secrets"
+    },
+    {
+      "question": "Which American band released the song Believer in 2017, later becoming an anthem for ESPN playlists?",
+      "options": ["Imagine Dragons", "OneRepublic", "X Ambassadors", "Bastille"],
+      "answer": "Imagine Dragons"
+    },
+    {
+      "question": "Which 2022 dance‑pop hit by David Guetta and Bebe Rexha interpolates Eiffel 65's Blue (Da Ba Dee)?",
+      "options": ["I'm Good (Blue)", "Let's Love", "Say My Name", "Family"],
+      "answer": "I'm Good (Blue)"
+    },
+    {
+      "question": "Who released the critically acclaimed 2014 debut album LP1, blending alternative R&B and art pop?",
+      "options": ["FKA twigs", "Banks", "Kehlani", "Jhené Aiko"],
+      "answer": "FKA twigs"
+    }
   ]
+}
   

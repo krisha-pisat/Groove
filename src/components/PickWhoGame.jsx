@@ -1,174 +1,259 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useState, useRef } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import pickWhoQuestions from '../assets/pick_who.json';
+import { isHostUser } from '../lib/isHostUser';
 
-// Placeholder participant list
-const allParticipants = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Heidi"];
-
-const questions = [
-  "Who is most likely to become a billionaire? 💰👑",
-  "Who is most likely to survive a zombie apocalypse? 🧟‍♂️🔫",
-  "Who is most likely to go viral on the internet? 🌐🔥",
-  "Who is most likely to get lost in their own neighborhood? 🗺️😵",
-  "Who is most likely to forget an important birthday? 🎂🙈",
-  "Who is most likely to travel the world? ✈️🌍",
-  "Who is most likely to invent something genius? 💡🧠",
-  "Who is most likely to run a marathon without training? 🏃‍♂️😅",
-  "Who is most likely to own 10 cats? 🐱🐱🐱",
-  "Who is most likely to move to a different country? 🌎📦",
-  "Who is most likely to cry at a movie? 🎥😭",
-  "Who is most likely to show up late to their own wedding? ⏰💒",
-  "Who is most likely to win a reality TV show? 📺🏆",
-  "Who is most likely to become a stand-up comedian? 🎤😂",
-  "Who is most likely to have a secret talent? 🤫🎨",
-  "Who is most likely to sleep through an earthquake? 🛏️🌍",
-  "Who is most likely to get arrested for a funny reason? 🚓😆",
-  "Who is most likely to accidentally text the wrong person? 📱🙃",
-  "Who is most likely to win an Olympic medal? 🥇🏅",
-  "Who is most likely to start a cult? 🕯️👀",
-  "Who is most likely to become a professional gamer? 🎮💻",
-  "Who is most likely to befriend a wild animal? 🐻🤝",
-  "Who is most likely to go skydiving without hesitation? 🪂😎",
-  "Who is most likely to become a famous chef? 👨‍🍳🌟",
-  "Who is most likely to forget their passport at the airport? ✈️🛂🙄",
-  "Who would you vote off the island? 🏝️🚫",
-  "Who would you choose to lead the group in a crisis? 🚨🧭",
-  "Who would you trust to keep a big secret? 🤐🔒",
-  "Who would you choose to cook for the whole group? 🍽️👨‍🍳",
-  "Who would you pick to sing karaoke with? 🎤🎶",
-  "Who would you NOT want to be stuck with on a desert island? 🏝️😬",
-  "Who would you choose to plan your birthday party? 🎉🎈",
-  "Who would you pick to design your dream house? 🏠🎨",
-  "Who would you trust to manage your finances? 💸📊",
-  "Who would you pick to babysit your pet? 🐶🐾",
-  "Who would you choose as your partner in a heist? 🕵️‍♂️💼",
-  "Who would you vote for as class president? 🏫🗳️",
-  "Who would you choose to be stranded on Mars with? 🚀🪐",
-  "Who would you trust to deliver a public speech for you? 🗣️🎤",
-  "Who would you choose to play in a trivia game? 🧠❓",
-  "Who would you pick to survive in the wild for a week? 🌲🛖",
-  "Who would you NOT trust with your phone unlocked? 📱🙈",
-  "Who would you pick to give relationship advice? 💌🧠",
-  "Who would you choose to be your teammate in a video game? 🎮🤝",
-  "Who would you trust to solve a mystery? 🔍🕵️",
-  "Who would you pick to go on a reality dating show? 💘📺",
-  "Who would you choose to prank someone with? 😈🎭",
-  "Who would you vote as most dramatic? 🎭😱",
-  "Who would you choose to bring to a job interview? 💼🧑‍💼",
-  "Who would you nominate for 'most chaotic energy'? ⚡😜"
-];
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-export default function PickWhoGame({ total = 10, secs = 15, onFinish }) {
-  const [idx, setIdx] = useState(0);
-  const [picked, setPicked] = useState(null);
-  const [time, setTime] = useState(secs);
-
-  // Shuffle questions and pick random participants for each question
-  const qSet = useMemo(() => shuffle(questions).slice(0, total), [total]);
-  const participantOptions = useMemo(
-    () =>
-      Array.from({ length: total }, () =>
-        shuffle(allParticipants).slice(0, 4)
-      ),
-    [total]
-  );
-
-  const q = qSet[idx];
-  const options = participantOptions[idx];
+export default function PickWhoGame({ roomCode, currentUserName }) {
+  const [session, setSession] = useState(null);
+  const [question, setQuestion] = useState(null);
+  const [isHost, setIsHost] = useState(false);
+  const [participants, setParticipants] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showCorrect, setShowCorrect] = useState(false);
+  const [timer, setTimer] = useState(null);
+  const timerRef = useRef();
 
   useEffect(() => {
-    if (time === 0) next();
-    const t = setTimeout(() => setTime(t => t - 1), 1000);
-    return () => clearTimeout(t);
-  }, [time]);
+    const fetch = async () => {
+      // Get current game session
+      const { data: sessionData } = await supabase
+        .from('game_sessions')
+        .select('*')
+        .eq('room_code', roomCode)
+        .eq('game_type', 'pick_who')
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single();
 
-  function choose(opt) {
-    if (picked) return;
-    setPicked(opt);
-    setTimeout(next, 700);
-  }
+      setSession(sessionData);
+      setQuestion(sessionData?.current_question);
 
-  function next() {
-    if (idx + 1 < qSet.length) {
-      setIdx(idx + 1);
-      setPicked(null);
-      setTime(secs);
-    } else {
-      onFinish?.();
+      // Get room data to check if user is host
+      const { data: roomData } = await supabase
+        .from('rooms')
+        .select('*')
+        .eq('code', roomCode)
+        .single();
+
+      setIsHost(isHostUser(roomData?.host_name, currentUserName));
+
+      // Get participants
+      const { data: participantsData } = await supabase
+        .from('participants')
+        .select('*')
+        .eq('room_code', roomCode);
+
+      // Deduplicate by id
+      const uniqueParticipants = (participantsData || []).filter(
+        (p, idx, arr) => arr.findIndex(x => x.id === p.id) === idx
+      );
+      setParticipants(uniqueParticipants);
+    };
+
+    fetch();
+
+    // Listen for game session updates
+    const sessionSub = supabase
+      .channel('pickwho_session_sync')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'game_sessions',
+        filter: `room_code=eq.${roomCode}`,
+      }, (payload) => {
+        setSession(payload.new);
+        setQuestion(payload.new.current_question);
+        if (payload.new.game_state === 'ended') {
+          console.log('Game ended');
+        }
+      })
+      .subscribe();
+
+    // Listen for new answers
+    const answersSub = supabase
+      .channel('pickwho_answers_sync')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'game_answers',
+        filter: `game_session_id=eq.${session?.id}`,
+      }, (payload) => {
+        setAnswers(prev => ({
+          ...prev,
+          [payload.new.participant_id]: payload.new.answer
+        }));
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(sessionSub);
+      supabase.removeChannel(answersSub);
+    };
+  }, [roomCode, currentUserName, session?.id]);
+
+  useEffect(() => {
+    if (!session?.config?.seconds_per_question) return;
+    setTimer(session.config.seconds_per_question);
+    setShowCorrect(false);
+    setSelectedAnswer(null);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setTimer((prev) => {
+        if (prev === 1) {
+          clearInterval(timerRef.current);
+          setShowCorrect(true);
+        }
+        return prev > 0 ? prev - 1 : 0;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [session?.question_index]);
+
+  const submitAnswer = async (answer) => {
+    setSelectedAnswer(answer);
+    setShowCorrect(true);
+    const { data: participant } = await supabase
+      .from('participants')
+      .select('id')
+      .eq('room_code', roomCode)
+      .eq('user_name', currentUserName)
+      .single();
+
+    if (participant) {
+      await supabase.from('game_answers').insert({
+        id: crypto.randomUUID(),
+        game_session_id: session.id,
+        participant_id: participant.id,
+        answer: answer,
+        submitted_at: new Date(),
+      });
     }
-  }
+  };
 
-  // Progress bar percent for question number
-  const progress = ((idx + 1) / qSet.length) * 100;
+  const goToNext = async () => {
+    const nextIndex = session.question_index + 1;
+    const totalQuestions = session?.config?.total_questions || pickWhoQuestions.questions.length;
+    // Fetch current participant names
+    const { data: participantsData } = await supabase
+      .from('participants')
+      .select('user_name')
+      .eq('room_code', roomCode);
+    const names = participantsData ? participantsData.map(p => p.user_name) : [];
+
+    if (nextIndex >= totalQuestions) {
+      // End game
+      await supabase
+        .from('game_sessions')
+        .update({ game_state: 'ended' })
+        .eq('id', session.id);
+    } else {
+      // Go to next question, set options to current participant names
+      const nextQ = {
+        ...pickWhoQuestions.questions[nextIndex],
+        options: names,
+      };
+      await supabase
+        .from('game_sessions')
+        .update({
+          question_index: nextIndex,
+          current_question: nextQ,
+          updated_at: new Date(),
+        })
+        .eq('id', session.id);
+    }
+  };
+
+  if (!question) return <div className="text-white text-center p-8">Loading question...</div>;
+
+  // For PickWho, highlight the user's selected answer after submission or timeout
 
   return (
-    <div className="flex flex-col items-center min-h-[80vh] w-full">
-      {/* Top header row */}
-      <div className="flex items-center justify-between w-full max-w-3xl mb-6 px-2 md:px-0">
-        <div className="flex items-center gap-3">
-          <span className="w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-2xl">🥳</span>
-          <div>
-            <div className="font-semibold text-white text-lg">Pick Who Game</div>
-            <div className="text-sm text-slate-400">Round {idx + 1} of {qSet.length}</div>
-          </div>
-        </div>
-        <button
-          className="px-5 py-2 rounded-xl bg-[#232336] text-white font-semibold hover:bg-[#2d2d45] transition border border-[#232336] text-base"
-          onClick={onFinish}
-        >
-          Leave Game
-        </button>
-      </div>
-
-      {/* Card */}
-      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] px-6 py-6 max-w-3xl w-full mx-auto">
+    <div className="w-full max-w-4xl mx-auto p-6">
+      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] px-6 py-6">
         <div className="flex items-center justify-center gap-2 text-sm text-[#a259ff] mb-2">
-          <svg width="18" height="18" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" stroke="#a259ff" strokeWidth="2" fill="none"/><path d="M8 4v4l3 2" stroke="#a259ff" strokeWidth="2" strokeLinecap="round"/></svg>
-          <span>Your turn - {time}s left</span>
+          <span className="text-2xl">🥳</span>
+          <span>Question {session?.question_index + 1} of {session?.config?.total_questions || pickWhoQuestions.questions.length}</span>
+          <span className="ml-4 text-pink-400 font-bold">{timer !== null ? `⏰ ${timer}s` : null}</span>
         </div>
-        <h1 className="text-xl font-bold text-white mb-6 text-center">{q}</h1>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          {options.map((opt, i) => {
-            const state =
-              picked === null
-                ? "idle"
-                : opt === picked
-                ? "right"
-                : "other";
-            const colour =
-              state === "idle"
-                ? "bg-[#232336] text-white hover:bg-gradient-to-r hover:from-[#a259ff] hover:to-[#f246a9] hover:text-white"
-                : state === "right"
-                ? "bg-emerald-500 text-white"
-                : "bg-[#232336] text-white";
+        
+        <h1 className="text-xl font-bold text-white mb-6 text-center">{question.question}</h1>
+        
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          {question.options.map((opt, i) => {
+            let colour = "bg-[#232336] text-white hover:bg-gradient-to-r hover:from-[#a259ff] hover:to-[#f246a9] hover:text-white";
+            if (showCorrect) {
+              if (selectedAnswer === opt) {
+                colour = "bg-green-600 text-white";
+              }
+            } else if (selectedAnswer === opt) {
+              colour = "bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white";
+            }
             return (
               <button
                 key={opt}
-                onClick={() => choose(opt)}
-                className={`flex items-center gap-3 w-full h-14 px-6 rounded-xl font-semibold text-base transition shadow-[0_4px_24px_0_rgba(236,72,153,0.15)] text-left ${colour}`}
+                onClick={() => !showCorrect && submitAnswer(opt)}
+                disabled={showCorrect}
+                className={`flex items-center gap-3 w-full h-16 px-6 rounded-xl font-semibold text-base transition shadow-[0_4px_24px_0_rgba(236,72,153,0.15)] text-left ${colour}`}
               >
-                <span className="font-bold text-base mr-2 opacity-80">{String.fromCharCode(65 + i)}.</span>
+                <span className="font-bold text-base mr-2 opacity-80">{i + 1}.</span>
                 <span className="text-left">{opt}</span>
               </button>
             );
           })}
         </div>
-        {/* Progress Bar */}
-        <div className="w-full h-3 rounded-full bg-[#232336] overflow-hidden mt-4">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-[#a259ff] to-[#f246a9] transition-all duration-200"
-            style={{ width: `${progress}%` }}
-          />
+
+        {/* Participants and their answers */}
+        <div className="mb-6">
+          <h3 className="text-white font-semibold mb-3">Participants:</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {participants.filter((p, idx, arr) => arr.findIndex(x => x.id === p.id) === idx).map((participant) => {
+              const theirAnswer = answers[participant.id];
+              let answerColor = '';
+              if (showCorrect && theirAnswer) {
+                answerColor = theirAnswer === selectedAnswer ? 'text-green-400' : 'text-red-400';
+              }
+              return (
+                <div key={participant.id} className="bg-[#232336] rounded-lg p-3 text-center">
+                  <div className="text-white text-sm font-medium">{participant.user_name}</div>
+                  <div className="text-[#a259ff] text-xs">
+                    {theirAnswer ? (
+                      <div>
+                        <div>Answered</div>
+                        <div className={`text-white text-xs mt-1 ${answerColor}`}>{theirAnswer}</div>
+                      </div>
+                    ) : (
+                      "Waiting..."
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-        {/* Round display below progress bar, centered */}
-        <div className="mt-4 text-white text-sm text-center">Round: {idx + 1} / {qSet.length}</div>
+        {/* Host controls */}
+        {isHost && (
+          <div className="flex justify-center">
+            <button
+              onClick={async () => {
+                const nextIndex = session.question_index + 1;
+                const totalQuestions = session?.config?.total_questions || pickWhoQuestions.questions.length;
+                if (nextIndex >= totalQuestions) {
+                  await supabase
+                    .from('game_sessions')
+                    .update({ game_state: 'ended' })
+                    .eq('id', session.id);
+                } else {
+                  await goToNext();
+                }
+              }}
+              className="bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white font-semibold py-3 px-8 rounded-xl hover:from-[#8a4fd8] hover:to-[#d63d8f] transition-all duration-300 shadow-[0_4px_24px_0_rgba(236,72,153,0.3)]"
+              disabled={!showCorrect}
+            >
+              {session?.question_index + 1 >= (session?.config?.total_questions || pickWhoQuestions.questions.length) ? "End Game" : "Next Question"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

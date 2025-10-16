@@ -608,7 +608,7 @@ const Room = () => {
                   </TabsContent>
 
                   <TabsContent value="chat"><ChatPanel userName={userName} roomCode={roomCode} /></TabsContent>
-                  <TabsContent value="games"><GamePanel userName={userName} roomCode={roomCode} /></TabsContent>
+                  <TabsContent value="games"><GamePanel currentUserName={userName} roomCode={roomCode} /></TabsContent>
                   <TabsContent value="karaoke"><KaraokePanel userName={userName} roomCode={roomCode} /></TabsContent>
                 </div>
               </Tabs>
