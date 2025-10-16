@@ -1,0 +1,4 @@
+Flask==3.0.0
+Flask-Cors==4.0.0
+ytmusicapi==1.7.3
+gunicorn==22.0.0

@@ -1,0 +1,17 @@
+# frontend.Dockerfile.dev
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install deps (cache)
+COPY package*.json ./
+RUN npm install
+
+# Copy rest (so container can start even if volume not mounted)
+COPY . .
+
+# Expose Vite default dev port
+EXPOSE 5173
+
+# Start Vite dev server, bind to 0.0.0. Use HOST=0.0.0.0 so container is reachable.
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
