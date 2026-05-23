@@ -162,18 +162,18 @@ export default function GuessTheSongGame({ roomCode, currentUserName }) {
   const correctAnswer = question.answer;
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] px-6 py-6">
+    <div className="w-full max-w-4xl mx-auto p-2 md:p-6">
+      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] px-3 py-4 md:px-6 md:py-6">
         <div className="flex items-center justify-center gap-2 text-sm text-[#a259ff] mb-2">
           <span className="text-2xl">🎧</span>
           <span>Question {session?.question_index + 1} of {session?.config?.total_questions || guessQuestions.questions.length}</span>
           <span className="ml-4 text-pink-400 font-bold">{timer !== null ? `⏰ ${timer}s` : null}</span>
         </div>
-        
-        <h1 className="text-3xl font-bold text-white mb-6 text-center">{question.question}</h1>
-        
+
+        <h1 className="text-xl md:text-3xl font-bold text-white mb-6 text-center">{question.question}</h1>
+
         <div className="mb-6">
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
             <input
               type="text"
               value={userAnswer}

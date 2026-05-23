@@ -87,10 +87,10 @@ const KaraokePanel = () => {
       {/* Karaoke Status */}
       <Card className="bg-muted/30 border-border">
         <CardContent className="p-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
-                <Mic className="w-6 h-6 text-primary-foreground" />
+              <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 bg-gradient-primary rounded-full flex items-center justify-center">
+                <Mic className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Karaoke Mode</h3>
@@ -99,26 +99,13 @@ const KaraokePanel = () => {
                 </p>
               </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <Button
-                variant={isRecording ? "destructive" : "hero"}
-                onClick={() => setIsRecording(!isRecording)}
-                className="flex items-center gap-2"
-              >
-                {isRecording ? (
-                  <>
-                    <MicOff className="w-4 h-4" />
-                    Stop Recording
-                  </>
-                ) : (
-                  <>
-                    <Mic className="w-4 h-4" />
-                    Start Singing
-                  </>
-                )}
-              </Button>
-            </div>
+            <Button
+              variant={isRecording ? "destructive" : "hero"}
+              onClick={() => setIsRecording(!isRecording)}
+              className="flex items-center gap-2"
+            >
+              {isRecording ? <><MicOff className="w-4 h-4" /><span>Stop</span></> : <><Mic className="w-4 h-4" /><span>Start Singing</span></>}
+            </Button>
           </div>
         </CardContent>
       </Card>

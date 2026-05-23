@@ -169,8 +169,8 @@ export default function PickWhoGame({ roomCode, currentUserName }) {
   // For PickWho, highlight the user's selected answer after submission or timeout
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] px-6 py-6">
+    <div className="w-full max-w-4xl mx-auto p-2 md:p-6">
+      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] px-3 py-4 md:px-6 md:py-6">
         <div className="flex items-center justify-center gap-2 text-sm text-[#a259ff] mb-2">
           <span className="text-2xl">🥳</span>
           <span>Question {session?.question_index + 1} of {session?.config?.total_questions || pickWhoQuestions.questions.length}</span>
@@ -194,7 +194,7 @@ export default function PickWhoGame({ roomCode, currentUserName }) {
                 key={opt}
                 onClick={() => !showCorrect && submitAnswer(opt)}
                 disabled={showCorrect}
-                className={`flex items-center gap-3 w-full h-16 px-6 rounded-xl font-semibold text-base transition shadow-[0_4px_24px_0_rgba(236,72,153,0.15)] text-left ${colour}`}
+                className={`flex items-center gap-3 w-full min-h-12 px-4 py-4 rounded-xl font-semibold text-sm md:text-base transition shadow-[0_4px_24px_0_rgba(236,72,153,0.15)] text-left ${colour}`}
               >
                 <span className="font-bold text-base mr-2 opacity-80">{i + 1}.</span>
                 <span className="text-left">{opt}</span>

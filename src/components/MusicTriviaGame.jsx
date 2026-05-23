@@ -195,8 +195,8 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
   const correctAnswer = question.answer;
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] px-6 py-6">
+    <div className="w-full max-w-4xl mx-auto p-2 md:p-6">
+      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] px-3 py-4 md:px-6 md:py-6">
         <div className="flex items-center justify-center gap-2 text-sm text-[#a259ff] mb-2">
           <svg width="18" height="18" fill="none" viewBox="0 0 16 16">
             <circle cx="8" cy="8" r="7" stroke="#a259ff" strokeWidth="2" fill="none"/>
@@ -208,7 +208,7 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
         
         <h1 className="text-xl font-bold text-white mb-6 text-center">{question.question}</h1>
         
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           {shuffledOptions.map((opt, i) => {
             let colour = "bg-[#232336] text-white hover:bg-gradient-to-r hover:from-[#a259ff] hover:to-[#f246a9] hover:text-white";
             if (showCorrect) {
@@ -225,9 +225,9 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
                 key={opt}
                 onClick={() => !showCorrect && submitAnswer(opt)}
                 disabled={showCorrect}
-                className={`flex items-center gap-3 w-full h-14 px-6 rounded-xl font-semibold text-base transition shadow-[0_4px_24px_0_rgba(236,72,153,0.15)] text-left ${colour}`}
+                className={`flex items-center gap-3 w-full min-h-12 px-4 py-3 rounded-xl font-semibold text-sm md:text-base transition shadow-[0_4px_24px_0_rgba(236,72,153,0.15)] text-left ${colour}`}
               >
-                <span className="font-bold text-base mr-2 opacity-80">{optionLetters[i]}.</span>
+                <span className="font-bold mr-1 opacity-80 shrink-0">{optionLetters[i]}.</span>
                 <span className="text-left">{opt}</span>
               </button>
             );

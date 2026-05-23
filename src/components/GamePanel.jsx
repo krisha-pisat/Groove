@@ -120,7 +120,7 @@ export default function GamePanel({ roomCode, currentUserName }) {
 
   if (isHost === null) {
     return (
-      <div className="w-full max-w-5xl mx-auto text-center text-white p-8">
+      <div className="w-full max-w-5xl mx-auto text-center text-white p-4 md:p-8">
         Loading room data...
       </div>
     );
@@ -138,8 +138,8 @@ export default function GamePanel({ roomCode, currentUserName }) {
   // Show results screen if game has ended
   if (gameEnded) {
     return (
-      <div className="w-full max-w-5xl mx-auto p-6 text-center">
-        <div className="bg-[#181825] rounded-2xl border border-[#232336] p-8">
+      <div className="w-full max-w-5xl mx-auto p-2 md:p-6 text-center">
+        <div className="bg-[#181825] rounded-2xl border border-[#232336] p-4 md:p-8">
           <h2 className="text-2xl font-bold text-white mb-4">Game Ended</h2>
           <p className="text-gray-300 mb-6">The game has ended. Choose another game to continue playing!</p>
           <button
@@ -215,7 +215,7 @@ export default function GamePanel({ roomCode, currentUserName }) {
     <div className="w-full max-w-5xl mx-auto text-center">
       <h3 className="text-2xl font-bold mb-2 text-white">Game Room</h3>
       <p className="text-slate-300 mb-8">Waiting for host to start the game...</p>
-      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] p-8">
+      <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] p-4 md:p-8">
         <div className="text-6xl mb-4">🎮</div>
         <p className="text-white text-lg">The host will choose a game to play with everyone!</p>
       </div>
