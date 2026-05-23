@@ -4,10 +4,11 @@ import { supabase } from "@/lib/supabaseClient";
 export default function useRoomMusicState(roomCode) {
   const [state, setState] = useState({
     current_song_data: null,
-    queue: [], // CHANGED: from queue_data to queue
+    queue: [],
     is_playing: false,
     playback_position: 0,
-    updated_at: null
+    updated_at: null,
+    receivedAt: null,   // local timestamp when THIS device received the state
   });
 
   useEffect(() => {
@@ -19,8 +20,7 @@ export default function useRoomMusicState(roomCode) {
         .select("*")
         .eq("room_code", roomCode)
         .single();
-      // CHANGED: payload.new.queue_data to payload.new.queue
-      if (data) setState({ ...data, queue: data.queue || [] }); // Ensure queue is an array
+      if (data) setState({ ...data, queue: data.queue || [], receivedAt: Date.now() });
     }
 
     fetchState();
@@ -30,16 +30,19 @@ export default function useRoomMusicState(roomCode) {
       .on("postgres_changes", {
         event: "UPDATE", schema: "public", table: "room_music_state",
         filter: `room_code=eq.${roomCode}`
-      }, (payload) => setState({ ...payload.new, queue: payload.new.queue || [] })) // CHANGED: payload.new.queue_data to payload.new.queue
+      }, (payload) => {
+        // Record the exact local time this device received the update
+        setState({ ...payload.new, queue: payload.new.queue || [], receivedAt: Date.now() });
+      })
       .subscribe();
 
     return () => supabase.removeChannel(channel);
   }, [roomCode]);
 
   const getSyncedPosition = () => {
-    if (!state.updated_at) return state.playback_position;
-    const elapsed = (Date.now() - new Date(state.updated_at).getTime()) / 1000;
-    // Ensure playback_position is treated as a number
+    if (!state.receivedAt) return parseFloat(state.playback_position || 0);
+    // Use only THIS device's own clock — no cross-device clock comparison
+    const elapsed = (Date.now() - state.receivedAt) / 1000;
     const currentPosition = parseFloat(state.playback_position || 0);
     return state.is_playing ? currentPosition + elapsed : currentPosition;
   };

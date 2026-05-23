@@ -220,10 +220,10 @@ const MusicPlayer = ({
       if (!playerRef.current || !playerInstanceReady.current) return;
       const localTime = playerRef.current.getCurrentTime();
       const syncedTime = getSyncedPosition();
-      if (Math.abs(localTime - syncedTime) > 2) {
+      if (Math.abs(localTime - syncedTime) > 1.5) {
         playerRef.current.seekTo(syncedTime, true);
       }
-    }, 5000);
+    }, 3000);
     return () => clearInterval(syncInterval);
   }, [isPlaying, getSyncedPosition]);
 
