@@ -129,8 +129,8 @@ const Room = () => {
   }, [updateMusicState]);
 
   const handlePlayerQueueUpdate = useCallback((newQueue) => {
-    updateMusicState({ queue: newQueue });
-  }, [updateMusicState]);
+    updateMusicState({ queue: newQueue, playback_position: getSyncedPosition() });
+  }, [updateMusicState, getSyncedPosition]);
 
   // Music search and queue management (ANY user can add)
   const handleSearch = async (query) => {
@@ -154,7 +154,6 @@ const Room = () => {
 
   const addToQueue = useCallback(async (song) => {
     const newQueue = syncedQueue ? [...syncedQueue, song] : [song];
-    await updateMusicState({ queue: newQueue });
 
     if (!syncedCurrentSong || Object.keys(syncedCurrentSong).length === 0) {
       await updateMusicState({
@@ -163,12 +162,14 @@ const Room = () => {
         is_playing: true,
         playback_position: 0,
       });
+    } else {
+      await updateMusicState({ queue: newQueue, playback_position: getSyncedPosition() });
     }
 
     setSearchQuery("");
     setSearchResults([]);
     toast({ title: "Song added to queue!" });
-  }, [syncedQueue, syncedCurrentSong, updateMusicState, toast]);
+  }, [syncedQueue, syncedCurrentSong, updateMusicState, getSyncedPosition, toast]);
 
   const removeFromQueue = useCallback(async (videoId) => {
     const newQueue = syncedQueue.filter((s) => s.videoId !== videoId);

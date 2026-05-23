@@ -213,6 +213,20 @@ const MusicPlayer = ({
     }
   }, [currentSong, isPlaying, playbackPosition, getSyncedPosition, createPlayer, isYoutubeApiReady, playerInstanceReady]);
 
+  // --- Periodic Resync to correct clock drift between devices ---
+  useEffect(() => {
+    if (!isPlaying) return;
+    const syncInterval = setInterval(() => {
+      if (!playerRef.current || !playerInstanceReady.current) return;
+      const localTime = playerRef.current.getCurrentTime();
+      const syncedTime = getSyncedPosition();
+      if (Math.abs(localTime - syncedTime) > 2) {
+        playerRef.current.seekTo(syncedTime, true);
+      }
+    }, 5000);
+    return () => clearInterval(syncInterval);
+  }, [isPlaying, getSyncedPosition]);
+
   // --- Progress Update Interval for UI ---
   useEffect(() => {
     clearInterval(intervalRef.current);
