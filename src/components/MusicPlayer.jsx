@@ -310,78 +310,29 @@ const MusicPlayer = ({
 
   return (
     <Card className="bg-card/90 backdrop-blur-md border-border shadow-glow-sm">
-      <CardContent className="p-6">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-lg overflow-hidden bg-muted/40 flex items-center justify-center">
+      <CardContent className="p-4 md:p-6">
+        {/* Song info row */}
+        <div className="flex items-center gap-3 md:gap-6 mb-4">
+          <div className="w-14 h-14 md:w-20 md:h-20 shrink-0 rounded-lg overflow-hidden bg-muted/40 flex items-center justify-center">
             {currentSong && Object.keys(currentSong).length > 0 ? (
               <img src={currentSong.thumbnail} alt="cover" className="w-full h-full object-cover" />
             ) : (
-              <Music className="w-8 h-8 text-muted-foreground" />
+              <Music className="w-6 h-6 md:w-8 md:h-8 text-muted-foreground" />
             )}
           </div>
-
           <div className="flex-1 min-w-0">
             {currentSong && Object.keys(currentSong).length > 0 ? (
               <>
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-xl font-semibold text-foreground truncate">{currentSong.title}</h3>
-                </div>
-                <p className="text-muted-foreground mb-1">{currentSong.artist}</p>
-                <p className="text-sm text-muted-foreground">{currentSong.album}</p>
+                <h3 className="text-base md:text-xl font-semibold text-foreground truncate">{currentSong.title}</h3>
+                <p className="text-sm text-muted-foreground truncate">{currentSong.artist}</p>
+                <p className="text-xs text-muted-foreground truncate hidden sm:block">{currentSong.album}</p>
               </>
             ) : (
-              <h3 className="text-lg text-muted-foreground">Nothing playing</h3>
+              <h3 className="text-base text-muted-foreground">Nothing playing</h3>
             )}
           </div>
-
-          <div className="flex flex-col items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={handleShuffleToggle}>
-                <Shuffle className={`w-4 h-4 ${isShuffling ? "text-pink-400" : "text-muted-foreground"}`} />
-              </Button>
-              <Button variant="ghost" size="sm" disabled={!currentSong || Object.keys(currentSong).length === 0} onClick={handlePrev}>
-                <SkipBack className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="hero"
-                size="lg"
-                onClick={togglePlay}
-                className="w-12 h-12 rounded-full shadow-glow flex items-center justify-center"
-                disabled={!currentSong || Object.keys(currentSong).length === 0}
-              >
-                {isLoading && currentSong && Object.keys(currentSong).length > 0 ? (
-                  <Loader2 className="w-6 h-6 animate-spin" />
-                ) : internalIsPlaying ? (
-                  <Pause className="w-6 h-6" />
-                ) : (
-                  <Play className="w-6 h-6" />
-                )}
-              </Button>
-              <Button variant="ghost" size="sm" disabled={!currentSong || Object.keys(currentSong).length === 0} onClick={handleSkip}>
-                <SkipForward className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Repeat className="w-4 h-4" />
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-3 w-80">
-              <span className="text-xs text-muted-foreground w-10 text-right">{formatTime(progress)}</span>
-              <Slider
-                value={[progress]}
-                onValueChange={handleSeek}
-                max={duration || 1}
-                step={1}
-                className="flex-1"
-                disabled={!currentSong || Object.keys(currentSong).length === 0}
-              />
-              <span className="text-xs text-muted-foreground w-10">
-                {formatTime(duration)}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
+          {/* Volume — desktop only inline */}
+          <div className="hidden md:flex items-center gap-2 shrink-0">
             <Volume2 className="w-4 h-4 text-muted-foreground" />
             <Slider
               value={internalVolume}
@@ -392,6 +343,67 @@ const MusicPlayer = ({
               max={100}
               step={1}
               className="w-20"
+            />
+          </div>
+        </div>
+
+        {/* Progress bar — full width */}
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xs text-muted-foreground w-8 text-right shrink-0">{formatTime(progress)}</span>
+          <Slider
+            value={[progress]}
+            onValueChange={handleSeek}
+            max={duration || 1}
+            step={1}
+            className="flex-1"
+            disabled={!currentSong || Object.keys(currentSong).length === 0}
+          />
+          <span className="text-xs text-muted-foreground w-8 shrink-0">{formatTime(duration)}</span>
+        </div>
+
+        {/* Controls + mobile volume row */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 md:gap-2">
+            <Button variant="ghost" size="sm" onClick={handleShuffleToggle}>
+              <Shuffle className={`w-4 h-4 ${isShuffling ? "text-pink-400" : "text-muted-foreground"}`} />
+            </Button>
+            <Button variant="ghost" size="sm" disabled={!currentSong || Object.keys(currentSong).length === 0} onClick={handlePrev}>
+              <SkipBack className="w-5 h-5" />
+            </Button>
+            <Button
+              variant="hero"
+              size="lg"
+              onClick={togglePlay}
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full shadow-glow flex items-center justify-center"
+              disabled={!currentSong || Object.keys(currentSong).length === 0}
+            >
+              {isLoading && currentSong && Object.keys(currentSong).length > 0 ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : internalIsPlaying ? (
+                <Pause className="w-5 h-5" />
+              ) : (
+                <Play className="w-5 h-5" />
+              )}
+            </Button>
+            <Button variant="ghost" size="sm" disabled={!currentSong || Object.keys(currentSong).length === 0} onClick={handleSkip}>
+              <SkipForward className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="sm">
+              <Repeat className="w-4 h-4" />
+            </Button>
+          </div>
+          {/* Volume — mobile compact */}
+          <div className="flex md:hidden items-center gap-1">
+            <Volume2 className="w-4 h-4 text-muted-foreground" />
+            <Slider
+              value={internalVolume}
+              onValueChange={(val) => {
+                setInternalVolume(val);
+                if (playerRef.current && playerInstanceReady.current) playerRef.current.setVolume(val[0]);
+              }}
+              max={100}
+              step={1}
+              className="w-16"
             />
           </div>
         </div>

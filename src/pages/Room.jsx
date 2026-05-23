@@ -497,31 +497,31 @@ const Room = () => {
 
   return (
     <div className="min-h-screen bg-gradient-secondary">
-      <header className="bg-card/80 backdrop-blur-md border-b border-border p-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <Music className="w-6 h-6 text-primary-foreground" />
+      <header className="bg-card/80 backdrop-blur-md border-b border-border p-3 md:p-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 md:gap-4 min-w-0">
+            <div className="w-9 h-9 md:w-12 md:h-12 shrink-0 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <Music className="w-4 h-4 md:w-6 md:h-6 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground mb-2">{roomName}</h1>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="font-mono">{roomCode}</Badge>
-                <Badge variant="outline" className="flex items-center gap-1">
+            <div className="min-w-0">
+              <h1 className="text-lg md:text-2xl font-bold text-foreground truncate">{roomName}</h1>
+              <div className="flex items-center gap-1 md:gap-2">
+                <Badge variant="secondary" className="font-mono text-xs">{roomCode}</Badge>
+                <Badge variant="outline" className="flex items-center gap-1 text-xs">
                   <Users className="w-3 h-3" />{participants.length}
                 </Badge>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm"><Heart className="w-4 h-4" /></Button>
-            <Button variant="ghost" size="sm" onClick={handleShareRoom}><Share2 className="w-4 h-4" /></Button>
-            <Button variant="hero" size="sm" onClick={handleShareRoom}>Invite Friends</Button>
+          <div className="flex items-center gap-1 md:gap-2 shrink-0">
+            <Button variant="ghost" size="sm" className="w-8 h-8 p-0 md:w-auto md:h-auto md:px-3"><Heart className="w-4 h-4" /></Button>
+            <Button variant="ghost" size="sm" className="w-8 h-8 p-0 md:w-auto md:h-auto md:px-3" onClick={handleShareRoom}><Share2 className="w-4 h-4" /></Button>
+            <Button variant="hero" size="sm" onClick={handleShareRoom} className="hidden sm:flex">Invite Friends</Button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="max-w-7xl mx-auto p-2 md:p-4 grid grid-cols-1 lg:grid-cols-4 gap-3 md:gap-6">
         <div className="lg:col-span-3 space-y-6">
           <MusicPlayer
             currentSong={syncedCurrentSong}
@@ -548,10 +548,10 @@ const Room = () => {
             <CardContent>
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-4 bg-muted/50">
-                  <TabsTrigger value="music" className="flex items-center gap-2"><Music className="w-4 h-4" /> Queue</TabsTrigger>
-                  <TabsTrigger value="chat" className="flex items-center gap-2"><MessageCircle className="w-4 h-4" /> Chat</TabsTrigger>
-                  <TabsTrigger value="games" className="flex items-center gap-2"><Gamepad2 className="w-4 h-4" /> Games</TabsTrigger>
-                  <TabsTrigger value="karaoke" className="flex items-center gap-2"><Mic className="w-4 h-4" /> Karaoke</TabsTrigger>
+                  <TabsTrigger value="music" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm"><Music className="w-4 h-4 shrink-0" /><span className="hidden sm:inline">Queue</span></TabsTrigger>
+                  <TabsTrigger value="chat" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm"><MessageCircle className="w-4 h-4 shrink-0" /><span className="hidden sm:inline">Chat</span></TabsTrigger>
+                  <TabsTrigger value="games" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm"><Gamepad2 className="w-4 h-4 shrink-0" /><span className="hidden sm:inline">Games</span></TabsTrigger>
+                  <TabsTrigger value="karaoke" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm"><Mic className="w-4 h-4 shrink-0" /><span className="hidden sm:inline">Karaoke</span></TabsTrigger>
                 </TabsList>
 
                 <div className="mt-6">
@@ -567,17 +567,17 @@ const Room = () => {
                         {searchResults.map((song, i) => (
                           <div
                             key={i}
-                            className="flex items-center justify-between p-2 hover:bg-muted/50 cursor-pointer"
+                            className="flex items-center justify-between p-2 hover:bg-muted/50 cursor-pointer gap-2"
                             onClick={() => addToQueue(song)}
                           >
-                            <div className="flex items-center gap-2">
-                              <img src={song.thumbnail} alt="" className="w-10 h-10 rounded" />
-                              <div>
-                                <p className="font-medium text-foreground">{song.title}</p>
-                                <p className="text-xs text-muted-foreground">{song.artist}</p>
+                            <div className="flex items-center gap-2 min-w-0">
+                              <img src={song.thumbnail} alt="" className="w-9 h-9 md:w-10 md:h-10 rounded shrink-0" />
+                              <div className="min-w-0">
+                                <p className="font-medium text-foreground text-sm truncate">{song.title}</p>
+                                <p className="text-xs text-muted-foreground truncate">{song.artist}</p>
                               </div>
                             </div>
-                            <Badge variant="outline">+ Add</Badge>
+                            <Badge variant="outline" className="shrink-0 text-xs">+ Add</Badge>
                           </div>
                         ))}
                       </div>
@@ -586,16 +586,16 @@ const Room = () => {
                         <p className="text-center text-muted-foreground mt-4">Queue is empty. Search for a song to get started!</p>
                     )}
                     {syncedQueue?.map((song, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg mb-2">
-                        <div className="flex items-center gap-2">
-                          <img src={song.thumbnail} alt="" className="w-10 h-10 rounded" />
-                          <div>
-                            <p className="font-medium text-foreground">{song.title}</p>
-                            <p className="text-xs text-muted-foreground">{song.artist}</p>
+                      <div key={i} className="flex items-center justify-between p-2 md:p-3 bg-muted/30 rounded-lg mb-2 gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img src={song.thumbnail} alt="" className="w-9 h-9 md:w-10 md:h-10 rounded shrink-0" />
+                          <div className="min-w-0">
+                            <p className="font-medium text-foreground text-sm truncate">{song.title}</p>
+                            <p className="text-xs text-muted-foreground truncate">{song.artist}</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <Badge variant="outline">{song.duration}</Badge>
+                        <div className="flex items-center gap-1 md:gap-3 shrink-0">
+                          <Badge variant="outline" className="hidden sm:flex text-xs">{song.duration}</Badge>
                           <Button
                             variant="ghost"
                             size="icon"
