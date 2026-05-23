@@ -140,7 +140,7 @@ const Room = () => {
       return;
     }
     try {
-      const res = await axios.get(`http://localhost:5000/search?query=${query}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/search?query=${query}`);
       setSearchResults(res.data.results);
     } catch (err) {
       console.error("Search error:", err);
