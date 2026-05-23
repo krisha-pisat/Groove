@@ -41,10 +41,20 @@ export default function useRoomMusicState(roomCode) {
 
   const getSyncedPosition = () => {
     if (!state.receivedAt) return parseFloat(state.playback_position || 0);
-    // Use only THIS device's own clock — no cross-device clock comparison
-    const elapsed = (Date.now() - state.receivedAt) / 1000;
     const currentPosition = parseFloat(state.playback_position || 0);
-    return state.is_playing ? currentPosition + elapsed : currentPosition;
+    if (!state.is_playing) return currentPosition;
+
+    // How long since THIS device received the update (same-device clock, no skew)
+    const elapsedSinceReceipt = (Date.now() - state.receivedAt) / 1000;
+
+    // Estimate how long the message took to arrive: updated_at (writer's clock) → receivedAt (our clock)
+    // Capped 0–2s to ignore wild clock skew
+    const networkLatency = state.updated_at
+      ? Math.min(Math.max(0, (state.receivedAt - new Date(state.updated_at).getTime()) / 1000), 2)
+      : 0;
+
+    // Total: position at write time + delivery lag + time since we got it
+    return currentPosition + networkLatency + elapsedSinceReceipt;
   };
 
   return { ...state, getSyncedPosition };
