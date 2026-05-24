@@ -30,14 +30,14 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
   useEffect(() => {
     const fetch = async () => {
       // Get current game session
-      const { data: sessionData } = await supabase
+      const { data: sessionRows } = await supabase
         .from('game_sessions')
         .select('*')
         .eq('room_code', roomCode)
         .eq('game_type', 'music_trivia')
         .order('updated_at', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
+      const sessionData = sessionRows?.[0] ?? null;
 
       setSession(sessionData);
       setQuestion(sessionData?.current_question);
