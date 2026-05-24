@@ -38,13 +38,13 @@ export default function GamePanel({ roomCode, currentUserName }) {
 
     // Fetch active game session (in case it already exists)
     const fetchActiveGame = async () => {
-      const { data: sessionData } = await supabase
+      const { data: sessionRows } = await supabase
         .from('game_sessions')
         .select('*')
         .eq('room_code', roomCode)
         .order('updated_at', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
+      const sessionData = sessionRows?.[0] ?? null;
       if (sessionData) {
         setActiveGame(sessionData.game_type);
         setSession(sessionData);
@@ -83,11 +83,11 @@ export default function GamePanel({ roomCode, currentUserName }) {
             setGameEnded(true);
             setActiveGame(null);
             setSession(null);
-            // Clean up the game session
+            // Clean up only this specific ended session
             supabase
               .from('game_sessions')
               .delete()
-              .eq('room_code', roomCode);
+              .eq('id', payload.new.id);
           } else {
             setActiveGame(payload.new.game_type);
             setSession(payload.new);

@@ -30,6 +30,13 @@ export async function startGame(gameType, roomCode, hostName, settings = {}) {
     questions = questions.slice(0, settings.total);
   }
 
+  // Remove any leftover session for this room+type before creating a new one
+  await supabase
+    .from('game_sessions')
+    .delete()
+    .eq('room_code', roomCode)
+    .eq('game_type', gameType);
+
   const firstQuestion = questions[0];
 
   const { error } = await supabase.from('game_sessions').insert({
@@ -47,5 +54,23 @@ export async function startGame(gameType, roomCode, hostName, settings = {}) {
     },
   });
 
-  if (error) console.error('Game start failed:', error.message);
+  if (error) {
+    console.error('Game start failed:', error.message);
+    return;
+  }
+
+  const gameNames = {
+    music_trivia: 'Music Trivia',
+    guess_the_song: 'Guess the Song',
+    would_you_rather: 'Would You Rather',
+    pick_who: 'Pick Who',
+  };
+
+  const { error: chatError } = await supabase.from('chat_messages').insert({
+    room_code: roomCode,
+    user_name: hostName,
+    message: `🎮 ${hostName} started ${gameNames[gameType] || gameType}! Head to the Games tab to play.`,
+    type: 'system',
+  });
+  if (chatError) console.error('Game notification failed:', chatError.message);
 } 
