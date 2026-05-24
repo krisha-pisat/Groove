@@ -52,6 +52,8 @@ const Room = () => {
   const [participants, setParticipants] = useState([]);
   const [isHost, setIsHost] = useState(false); // Still needed for initial music state creation
   const [activeTab, setActiveTab] = useState("music");
+  const [unreadChatCount, setUnreadChatCount] = useState(0);
+  const activeTabRef = useRef("music");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -495,6 +497,27 @@ const Room = () => {
     };
   }, [roomCode, userName, navigate, toast]);
 
+  useEffect(() => {
+    activeTabRef.current = activeTab;
+  }, [activeTab]);
+
+  useEffect(() => {
+    const chatSub = supabase
+      .channel(`room_unread_${roomCode}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'chat_messages',
+        filter: `room_code=eq.${roomCode}`,
+      }, () => {
+        if (activeTabRef.current !== 'chat') {
+          setUnreadChatCount(prev => prev + 1);
+        }
+      })
+      .subscribe();
+    return () => supabase.removeChannel(chatSub);
+  }, [roomCode]);
+
   return (
     <div className="min-h-screen bg-gradient-secondary">
       <header className="bg-card/80 backdrop-blur-md border-b border-border p-3 md:p-4">
@@ -546,10 +569,20 @@ const Room = () => {
               <CardTitle className="text-foreground">Room Activities</CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <Tabs value={activeTab} onValueChange={(tab) => { setActiveTab(tab); if (tab === 'chat') setUnreadChatCount(0); }}>
                 <TabsList className="grid w-full grid-cols-4 bg-muted/50">
                   <TabsTrigger value="music" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm"><Music className="w-4 h-4 shrink-0" /><span className="hidden sm:inline">Queue</span></TabsTrigger>
-                  <TabsTrigger value="chat" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm"><MessageCircle className="w-4 h-4 shrink-0" /><span className="hidden sm:inline">Chat</span></TabsTrigger>
+                  <TabsTrigger value="chat" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+                    <span className="relative">
+                      <MessageCircle className="w-4 h-4 shrink-0" />
+                      {unreadChatCount > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[9px] font-bold rounded-full min-w-[16px] h-4 px-0.5 flex items-center justify-center leading-none">
+                          {unreadChatCount > 99 ? '99+' : unreadChatCount}
+                        </span>
+                      )}
+                    </span>
+                    <span className="hidden sm:inline">Chat</span>
+                  </TabsTrigger>
                   <TabsTrigger value="games" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm"><Gamepad2 className="w-4 h-4 shrink-0" /><span className="hidden sm:inline">Games</span></TabsTrigger>
                   <TabsTrigger value="karaoke" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm"><Mic className="w-4 h-4 shrink-0" /><span className="hidden sm:inline">Karaoke</span></TabsTrigger>
                 </TabsList>
