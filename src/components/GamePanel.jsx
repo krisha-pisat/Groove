@@ -16,8 +16,9 @@ export default function GamePanel({ roomCode, currentUserName }) {
   const [activeGame, setActiveGame] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [pendingGameType, setPendingGameType] = useState(null);
-  const [session, setSession] = useState(null); // track session for results
-  const [gameEnded, setGameEnded] = useState(false); // track if game has ended
+  const [session, setSession] = useState(null);
+  const [gameEnded, setGameEnded] = useState(false);
+  const [endedSession, setEndedSession] = useState(null); // holds session data after game ends
 
   useEffect(() => {
     // Get room data
@@ -42,6 +43,7 @@ export default function GamePanel({ roomCode, currentUserName }) {
         .from('game_sessions')
         .select('*')
         .eq('room_code', roomCode)
+        .eq('game_state', 'active')
         .order('updated_at', { ascending: false })
         .limit(1);
       const sessionData = sessionRows?.[0] ?? null;
@@ -67,7 +69,9 @@ export default function GamePanel({ roomCode, currentUserName }) {
         },
         (payload) => {
           setActiveGame(payload.new.game_type);
-          setSession(payload.new); // Set session immediately on insert
+          setSession(payload.new);
+          setGameEnded(false);
+          setEndedSession(null);
         }
       )
       .on(
@@ -80,14 +84,10 @@ export default function GamePanel({ roomCode, currentUserName }) {
         },
         (payload) => {
           if (payload.new.game_state === 'ended') {
+            setEndedSession(payload.new);
             setGameEnded(true);
             setActiveGame(null);
             setSession(null);
-            // Clean up only this specific ended session
-            supabase
-              .from('game_sessions')
-              .delete()
-              .eq('id', payload.new.id);
           } else {
             setActiveGame(payload.new.game_type);
             setSession(payload.new);
@@ -103,6 +103,15 @@ export default function GamePanel({ roomCode, currentUserName }) {
 
   const handleStartGame = async (gameType) => {
     await startGame(gameType, roomCode, currentUserName);
+  };
+
+  const handleGameResultAction = async (action) => {
+    if (action === 'replay' && endedSession) {
+      await startGame(endedSession.game_type, roomCode, currentUserName);
+    } else if (action === 'pick_new') {
+      setGameEnded(false);
+      setEndedSession(null);
+    }
   };
 
   const handleGameCardClick = (gameType) => {
@@ -136,20 +145,16 @@ export default function GamePanel({ roomCode, currentUserName }) {
     return <PickWhoGame roomCode={roomCode} currentUserName={currentUserName} />;
 
   // Show results screen if game has ended
-  if (gameEnded) {
+  if (gameEnded && endedSession) {
     return (
-      <div className="w-full max-w-5xl mx-auto p-2 md:p-6 text-center">
-        <div className="bg-[#181825] rounded-2xl border border-[#232336] p-4 md:p-8">
-          <h2 className="text-2xl font-bold text-white mb-4">Game Ended</h2>
-          <p className="text-gray-300 mb-6">The game has ended. Choose another game to continue playing!</p>
-          <button
-            onClick={() => setGameEnded(false)}
-            className="bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90 transition"
-          >
-            Back to Game Selection
-          </button>
-        </div>
-      </div>
+      <GameResults
+        roomCode={roomCode}
+        currentUserName={currentUserName}
+        gameType={endedSession.game_type}
+        sessionId={endedSession.id}
+        isHost={isHost}
+        onAction={handleGameResultAction}
+      />
     );
   }
 

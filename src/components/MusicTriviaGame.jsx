@@ -163,6 +163,7 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
         game_session_id: session.id,
         participant_id: participant.id,
         answer: answer,
+        question_index: session.question_index,
         submitted_at: new Date(),
       });
     }
