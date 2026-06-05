@@ -14,6 +14,7 @@ export default function GuessTheSongGame({ roomCode, currentUserName }) {
   const [timer, setTimer] = useState(null);
   const [hasAnswered, setHasAnswered] = useState(false);
   const timerRef = useRef();
+  const userAnswerRef = useRef('');
 
   useEffect(() => {
     const fetch = async () => {
@@ -112,28 +113,39 @@ export default function GuessTheSongGame({ roomCode, currentUserName }) {
     return () => clearInterval(timerRef.current);
   }, [session?.question_index]);
 
-  const submitAnswer = async () => {
-    if (!userAnswer.trim() || showCorrect) return;
-    setHasAnswered(true);
-    setShowCorrect(true);
+  const writeAnswerToDB = async (answer) => {
     const { data: participant } = await supabase
       .from('participants')
       .select('id')
       .eq('room_code', roomCode)
       .eq('user_name', currentUserName)
       .single();
-
     if (participant) {
       await supabase.from('game_answers').insert({
         id: crypto.randomUUID(),
         game_session_id: session.id,
         participant_id: participant.id,
-        answer: userAnswer.trim(),
+        answer,
         question_index: session.question_index,
         submitted_at: new Date(),
       });
-      setUserAnswer('');
     }
+  };
+
+  // Auto-submit on timer expiry if user typed something but didn't click Submit
+  useEffect(() => {
+    if (!showCorrect || hasAnswered || !userAnswerRef.current.trim()) return;
+    setHasAnswered(true);
+    writeAnswerToDB(userAnswerRef.current.trim());
+  }, [showCorrect]); // eslint-disable-line
+
+  const submitAnswer = async () => {
+    if (!userAnswer.trim() || showCorrect || hasAnswered) return;
+    setHasAnswered(true);
+    setShowCorrect(true);
+    await writeAnswerToDB(userAnswer.trim());
+    setUserAnswer('');
+    userAnswerRef.current = '';
   };
 
   const goToNext = async () => {
@@ -178,7 +190,7 @@ export default function GuessTheSongGame({ roomCode, currentUserName }) {
             <input
               type="text"
               value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
+              onChange={(e) => { setUserAnswer(e.target.value); userAnswerRef.current = e.target.value; }}
               placeholder="Enter your guess..."
               className="flex-1 bg-[#232336] text-white px-4 py-3 rounded-xl border border-[#232336] focus:border-[#a259ff] focus:outline-none"
               onKeyPress={(e) => e.key === 'Enter' && submitAnswer()}

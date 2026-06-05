@@ -25,7 +25,9 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
   const [timer, setTimer] = useState(null);
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(0);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const timerRef = useRef();
+  const selectedAnswerRef = useRef(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -134,6 +136,8 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
   useEffect(() => {
     if (!session?.config?.seconds_per_question) return;
     setTimer(session.config.seconds_per_question);
+    setHasSubmitted(false);
+    selectedAnswerRef.current = null;
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setTimer((prev) => {
@@ -147,26 +151,43 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
     return () => clearInterval(timerRef.current);
   }, [session?.question_index]);
 
-  const submitAnswer = async (answer) => {
-    setSelectedAnswer(answer);
-    setShowCorrect(true);
+  const writeAnswerToDB = async (answer) => {
     const { data: participant } = await supabase
       .from('participants')
       .select('id')
       .eq('room_code', roomCode)
       .eq('user_name', currentUserName)
       .single();
-
     if (participant) {
       await supabase.from('game_answers').insert({
         id: crypto.randomUUID(),
         game_session_id: session.id,
         participant_id: participant.id,
-        answer: answer,
+        answer,
         question_index: session.question_index,
         submitted_at: new Date(),
       });
     }
+  };
+
+  // Auto-submit when timer expires with a selected but not yet locked answer
+  useEffect(() => {
+    if (!showCorrect || hasSubmitted || !selectedAnswerRef.current) return;
+    setHasSubmitted(true);
+    writeAnswerToDB(selectedAnswerRef.current);
+  }, [showCorrect]); // eslint-disable-line
+
+  const selectAnswer = (answer) => {
+    if (showCorrect) return;
+    setSelectedAnswer(answer);
+    selectedAnswerRef.current = answer;
+  };
+
+  const lockIn = async () => {
+    if (!selectedAnswer || showCorrect || hasSubmitted) return;
+    setHasSubmitted(true);
+    setShowCorrect(true);
+    await writeAnswerToDB(selectedAnswer);
   };
 
   const goToNext = async () => {
@@ -193,8 +214,6 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
 
   if (!question) return <div className="text-white text-center p-8">Loading question...</div>;
 
-  const correctAnswer = question.answer;
-
   return (
     <div className="w-full max-w-4xl mx-auto p-2 md:p-6">
       <div className="bg-[#181825] rounded-2xl border border-[#232336] shadow-[0_0_24px_0_rgba(236,72,153,0.15)] px-3 py-4 md:px-6 md:py-6">
@@ -209,22 +228,19 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
         
         <h1 className="text-xl font-bold text-white mb-6 text-center">{question.question}</h1>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
           {shuffledOptions.map((opt, i) => {
             let colour = "bg-[#232336] text-white hover:bg-gradient-to-r hover:from-[#a259ff] hover:to-[#f246a9] hover:text-white";
             if (showCorrect) {
-              if (i === correctAnswerIndex) {
-                colour = "bg-green-600 text-white";
-              } else if (selectedAnswer === opt) {
-                colour = "bg-red-600 text-white";
-              }
+              if (i === correctAnswerIndex) colour = "bg-green-600 text-white";
+              else if (selectedAnswer === opt) colour = "bg-red-600 text-white";
             } else if (selectedAnswer === opt) {
               colour = "bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white";
             }
             return (
               <button
                 key={opt}
-                onClick={() => !showCorrect && submitAnswer(opt)}
+                onClick={() => selectAnswer(opt)}
                 disabled={showCorrect}
                 className={`flex items-center gap-3 w-full min-h-12 px-4 py-3 rounded-xl font-semibold text-sm md:text-base transition shadow-[0_4px_24px_0_rgba(236,72,153,0.15)] text-left ${colour}`}
               >
@@ -234,6 +250,18 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
             );
           })}
         </div>
+
+        {!showCorrect && (
+          <div className="flex justify-center mb-6">
+            <button
+              onClick={lockIn}
+              disabled={!selectedAnswer}
+              className="bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white font-bold py-2 px-8 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              {selectedAnswer ? 'Lock In ✓' : 'Select an answer'}
+            </button>
+          </div>
+        )}
 
         {/* Participants and their answers */}
         <div className="mb-6">

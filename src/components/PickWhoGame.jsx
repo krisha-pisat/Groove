@@ -12,7 +12,9 @@ export default function PickWhoGame({ roomCode, currentUserName }) {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showCorrect, setShowCorrect] = useState(false);
   const [timer, setTimer] = useState(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const timerRef = useRef();
+  const selectedAnswerRef = useRef(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -97,6 +99,8 @@ export default function PickWhoGame({ roomCode, currentUserName }) {
     setTimer(session.config.seconds_per_question);
     setShowCorrect(false);
     setSelectedAnswer(null);
+    setHasSubmitted(false);
+    selectedAnswerRef.current = null;
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setTimer((prev) => {
@@ -110,26 +114,42 @@ export default function PickWhoGame({ roomCode, currentUserName }) {
     return () => clearInterval(timerRef.current);
   }, [session?.question_index]);
 
-  const submitAnswer = async (answer) => {
-    setSelectedAnswer(answer);
-    setShowCorrect(true);
+  const writeAnswerToDB = async (answer) => {
     const { data: participant } = await supabase
       .from('participants')
       .select('id')
       .eq('room_code', roomCode)
       .eq('user_name', currentUserName)
       .single();
-
     if (participant) {
       await supabase.from('game_answers').insert({
         id: crypto.randomUUID(),
         game_session_id: session.id,
         participant_id: participant.id,
-        answer: answer,
+        answer,
         question_index: session.question_index,
         submitted_at: new Date(),
       });
     }
+  };
+
+  useEffect(() => {
+    if (!showCorrect || hasSubmitted || !selectedAnswerRef.current) return;
+    setHasSubmitted(true);
+    writeAnswerToDB(selectedAnswerRef.current);
+  }, [showCorrect]); // eslint-disable-line
+
+  const selectAnswer = (answer) => {
+    if (showCorrect) return;
+    setSelectedAnswer(answer);
+    selectedAnswerRef.current = answer;
+  };
+
+  const lockIn = async () => {
+    if (!selectedAnswer || showCorrect || hasSubmitted) return;
+    setHasSubmitted(true);
+    setShowCorrect(true);
+    await writeAnswerToDB(selectedAnswer);
   };
 
   const goToNext = async () => {
@@ -180,20 +200,18 @@ export default function PickWhoGame({ roomCode, currentUserName }) {
         
         <h1 className="text-xl font-bold text-white mb-6 text-center">{question.question}</h1>
         
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-2 gap-4 mb-4">
           {question.options.map((opt, i) => {
             let colour = "bg-[#232336] text-white hover:bg-gradient-to-r hover:from-[#a259ff] hover:to-[#f246a9] hover:text-white";
             if (showCorrect) {
-              if (selectedAnswer === opt) {
-                colour = "bg-green-600 text-white";
-              }
+              if (selectedAnswer === opt) colour = "bg-green-600 text-white";
             } else if (selectedAnswer === opt) {
               colour = "bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white";
             }
             return (
               <button
                 key={opt}
-                onClick={() => !showCorrect && submitAnswer(opt)}
+                onClick={() => selectAnswer(opt)}
                 disabled={showCorrect}
                 className={`flex items-center gap-3 w-full min-h-12 px-4 py-4 rounded-xl font-semibold text-sm md:text-base transition shadow-[0_4px_24px_0_rgba(236,72,153,0.15)] text-left ${colour}`}
               >
@@ -203,6 +221,18 @@ export default function PickWhoGame({ roomCode, currentUserName }) {
             );
           })}
         </div>
+
+        {!showCorrect && (
+          <div className="flex justify-center mb-6">
+            <button
+              onClick={lockIn}
+              disabled={!selectedAnswer}
+              className="bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white font-bold py-2 px-8 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              {selectedAnswer ? 'Lock In ✓' : 'Select an answer'}
+            </button>
+          </div>
+        )}
 
         {/* Participants and their answers */}
         <div className="mb-6">
