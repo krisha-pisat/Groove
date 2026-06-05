@@ -249,10 +249,14 @@ export default function PickWhoGame({ roomCode, currentUserName }) {
                   <div className="text-white text-sm font-medium">{participant.user_name}</div>
                   <div className="text-[#a259ff] text-xs">
                     {theirAnswer ? (
-                      <div>
-                        <div>Answered</div>
-                        <div className={`text-white text-xs mt-1 ${answerColor}`}>{theirAnswer}</div>
-                      </div>
+                      showCorrect ? (
+                        <div>
+                          <div>Answered</div>
+                          <div className={`text-white text-xs mt-1 ${answerColor}`}>{theirAnswer}</div>
+                        </div>
+                      ) : (
+                        <div>Answered ✓</div>
+                      )
                     ) : (
                       "Waiting..."
                     )}
