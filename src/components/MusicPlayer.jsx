@@ -362,8 +362,9 @@ const MusicPlayer = ({
         </div>
 
         {/* Controls + mobile volume row */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 md:gap-2">
+        <div className="grid grid-cols-3 items-center">
+          <div />
+          <div className="flex items-center justify-center gap-1 md:gap-2">
             <Button variant="ghost" size="sm" onClick={handleShuffleToggle}>
               <Shuffle className={`w-4 h-4 ${isShuffling ? "text-pink-400" : "text-muted-foreground"}`} />
             </Button>
@@ -392,8 +393,8 @@ const MusicPlayer = ({
               <Repeat className="w-4 h-4" />
             </Button>
           </div>
-          {/* Volume — mobile compact */}
-          <div className="flex md:hidden items-center gap-1">
+          {/* Volume — mobile compact, right-aligned */}
+          <div className="flex md:hidden items-center justify-end gap-1">
             <Volume2 className="w-4 h-4 text-muted-foreground" />
             <Slider
               value={internalVolume}

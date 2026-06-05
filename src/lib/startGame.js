@@ -30,18 +30,9 @@ export async function startGame(gameType, roomCode, hostName, settings = {}) {
     questions = questions.slice(0, settings.total);
   }
 
-  // Remove any leftover session for this room+type before creating a new one
-  await supabase
-    .from('game_sessions')
-    .delete()
-    .eq('room_code', roomCode)
-    .eq('game_type', gameType);
-
   const firstQuestion = questions[0];
 
-  const { error } = await supabase.from('game_sessions').insert({
-    id: uuid,
-    room_code: roomCode,
+  const sessionPayload = {
     game_type: gameType,
     current_question: firstQuestion,
     question_index: 0,
@@ -52,7 +43,31 @@ export async function startGame(gameType, roomCode, hostName, settings = {}) {
       seconds_per_question: settings.secs || 15,
       host: hostName,
     },
-  });
+  };
+
+  // If a session already exists for this room, UPDATE it (avoids unique constraint)
+  // Otherwise INSERT a new one
+  const { data: existing } = await supabase
+    .from('game_sessions')
+    .select('id')
+    .eq('room_code', roomCode)
+    .limit(1);
+
+  let error;
+  if (existing && existing.length > 0) {
+    const { error: e } = await supabase
+      .from('game_sessions')
+      .update(sessionPayload)
+      .eq('room_code', roomCode);
+    error = e;
+  } else {
+    const { error: e } = await supabase.from('game_sessions').insert({
+      id: uuid,
+      room_code: roomCode,
+      ...sessionPayload,
+    });
+    error = e;
+  }
 
   if (error) {
     console.error('Game start failed:', error.message);
