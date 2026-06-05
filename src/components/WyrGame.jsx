@@ -149,7 +149,6 @@ export default function WyrGame({ roomCode, currentUserName }) {
   const lockIn = async () => {
     if (!selectedAnswer || showCorrect || hasSubmitted) return;
     setHasSubmitted(true);
-    setShowCorrect(true);
     await writeAnswerToDB(selectedAnswer);
   };
 
@@ -214,13 +213,17 @@ export default function WyrGame({ roomCode, currentUserName }) {
 
         {!showCorrect && (
           <div className="flex justify-center mb-6">
-            <button
-              onClick={lockIn}
-              disabled={!selectedAnswer}
-              className="bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white font-bold py-2 px-8 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
-            >
-              {selectedAnswer ? 'Lock In ✓' : 'Select an answer'}
-            </button>
+            {hasSubmitted ? (
+              <div className="text-green-400 font-bold py-2 px-8">Locked In ✓</div>
+            ) : (
+              <button
+                onClick={lockIn}
+                disabled={!selectedAnswer}
+                className="bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white font-bold py-2 px-8 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                {selectedAnswer ? 'Lock In ✓' : 'Select an answer'}
+              </button>
+            )}
           </div>
         )}
 

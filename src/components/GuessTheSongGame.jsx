@@ -144,7 +144,6 @@ export default function GuessTheSongGame({ roomCode, currentUserName }) {
   const submitAnswer = async () => {
     if (!userAnswer.trim() || showCorrect || hasAnswered) return;
     setHasAnswered(true);
-    setShowCorrect(true);
     await writeAnswerToDB(userAnswer.trim());
     setUserAnswer('');
     userAnswerRef.current = '';
@@ -188,24 +187,30 @@ export default function GuessTheSongGame({ roomCode, currentUserName }) {
         <h1 className="text-xl md:text-3xl font-bold text-white mb-6 text-center">{question.question}</h1>
 
         <div className="mb-6">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
-            <input
-              type="text"
-              value={userAnswer}
-              onChange={(e) => { setUserAnswer(e.target.value); userAnswerRef.current = e.target.value; }}
-              placeholder="Enter your guess..."
-              className="flex-1 bg-[#232336] text-white px-4 py-3 rounded-xl border border-[#232336] focus:border-[#a259ff] focus:outline-none"
-              onKeyPress={(e) => e.key === 'Enter' && submitAnswer()}
-              disabled={showCorrect}
-            />
-            <button
-              onClick={submitAnswer}
-              className="bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white font-semibold py-3 px-6 rounded-xl hover:from-[#8a4fd8] hover:to-[#d63d8f] transition-all duration-300"
-              disabled={showCorrect}
-            >
-              Submit
-            </button>
-          </div>
+          {hasAnswered ? (
+            <div className="flex justify-center mb-4">
+              <div className="text-green-400 font-bold py-2 px-8">Submitted ✓</div>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
+              <input
+                type="text"
+                value={userAnswer}
+                onChange={(e) => { setUserAnswer(e.target.value); userAnswerRef.current = e.target.value; }}
+                placeholder="Enter your guess..."
+                className="flex-1 bg-[#232336] text-white px-4 py-3 rounded-xl border border-[#232336] focus:border-[#a259ff] focus:outline-none"
+                onKeyPress={(e) => e.key === 'Enter' && submitAnswer()}
+                disabled={showCorrect}
+              />
+              <button
+                onClick={submitAnswer}
+                className="bg-gradient-to-r from-[#a259ff] to-[#f246a9] text-white font-semibold py-3 px-6 rounded-xl hover:from-[#8a4fd8] hover:to-[#d63d8f] transition-all duration-300"
+                disabled={showCorrect}
+              >
+                Submit
+              </button>
+            </div>
+          )}
           <div className="text-center text-sm text-gray-400">
             <p>Answer: <span className={`text-[#a259ff] font-semibold ${showCorrect ? '' : 'opacity-0'}`}>{correctAnswer}</span></p>
           </div>
