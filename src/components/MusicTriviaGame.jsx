@@ -5,15 +5,6 @@ import { isHostUser } from '../lib/isHostUser';
 
 const optionLetters = ["A", "B", "C", "D"];
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 export default function MusicTriviaGame({ roomCode, currentUserName }) {
   const [session, setSession] = useState(null);
   const [question, setQuestion] = useState(null);
@@ -138,6 +129,7 @@ export default function MusicTriviaGame({ roomCode, currentUserName }) {
     setTimer(session.config.seconds_per_question);
     setHasSubmitted(false);
     selectedAnswerRef.current = null;
+    setAnswers({});
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setTimer((prev) => {

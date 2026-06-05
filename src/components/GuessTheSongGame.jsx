@@ -100,6 +100,8 @@ export default function GuessTheSongGame({ roomCode, currentUserName }) {
     setShowCorrect(false);
     setHasAnswered(false);
     setUserAnswer('');
+    userAnswerRef.current = '';
+    setAnswers({});
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setTimer((prev) => {

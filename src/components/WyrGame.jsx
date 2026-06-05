@@ -101,6 +101,7 @@ export default function WyrGame({ roomCode, currentUserName }) {
     setSelectedAnswer(null);
     setHasSubmitted(false);
     selectedAnswerRef.current = null;
+    setAnswers({});
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setTimer((prev) => {
