@@ -91,8 +91,6 @@ export default function GamePanel({ roomCode, currentUserName }) {
           } else {
             setActiveGame(payload.new.game_type);
             setSession(payload.new);
-            setGameEnded(false);
-            setEndedSession(null);
           }
         }
       )
