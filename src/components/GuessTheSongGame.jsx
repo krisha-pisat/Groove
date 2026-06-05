@@ -134,6 +134,13 @@ export default function GuessTheSongGame({ roomCode, currentUserName }) {
     }
   };
 
+  // Reveal answers + enable Next Question as soon as everyone has answered
+  useEffect(() => {
+    if (showCorrect || participants.length === 0) return;
+    const allAnswered = participants.every(p => answers[p.id]);
+    if (allAnswered) setShowCorrect(true);
+  }, [answers, participants]);
+
   // Auto-submit on timer expiry if user typed something but didn't click Submit
   useEffect(() => {
     if (!showCorrect || hasAnswered || !userAnswerRef.current.trim()) return;
