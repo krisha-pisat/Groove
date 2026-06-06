@@ -15,6 +15,49 @@ function parseLRC(lrc) {
   return lines;
 }
 
+// Strip YouTube junk from titles so APIs can match them
+function cleanTitle(title) {
+  return title
+    .replace(/\(from[^)]*\)/gi, "")
+    .replace(/\[from[^\]]*\]/gi, "")
+    .replace(/\(official[^)]*\)/gi, "")
+    .replace(/\[official[^\]]*\]/gi, "")
+    .replace(/\(feat\.?[^)]*\)/gi, "")
+    .replace(/\(ft\.?[^)]*\)/gi, "")
+    .replace(/[-–|]\s*(official|lyric|audio|video|visualizer).*$/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function cleanArtist(artist) {
+  return (artist ?? "").split(/[,&]|feat\.|ft\./i)[0].trim();
+}
+
+async function fetchLrclib(artist, title) {
+  const params = new URLSearchParams({ artist_name: artist, track_name: title });
+  const res = await fetch(`https://lrclib.net/api/get?${params}`);
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data;
+}
+
+async function searchLrclib(artist, title) {
+  const q = `${title} ${artist}`.trim();
+  const res = await fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(q)}`);
+  if (!res.ok) return null;
+  const results = await res.json();
+  return Array.isArray(results) && results.length > 0 ? results[0] : null;
+}
+
+async function fetchLyricsOvh(artist, title) {
+  const a = encodeURIComponent(artist);
+  const t = encodeURIComponent(title);
+  const res = await fetch(`https://api.lyrics.ovh/v1/${a}/${t}`);
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.lyrics ?? null;
+}
+
 export default function KaraokePanel({ currentSong, getSyncedPosition, isPlaying }) {
   const [lyrics, setLyrics] = useState([]);
   const [plainLyrics, setPlainLyrics] = useState("");
@@ -49,14 +92,26 @@ export default function KaraokePanel({ currentSong, getSyncedPosition, isPlaying
 
     const load = async () => {
       try {
-        const params = new URLSearchParams({
-          artist_name: currentSong.artist ?? "",
-          track_name: currentSong.title ?? "",
-        });
-        const res = await fetch(`https://lrclib.net/api/get?${params}`);
-        if (!res.ok) { setStatus("no_lyrics"); return; }
-        const data = await res.json();
-        if (data.syncedLyrics) {
+        const rawTitle = currentSong.title ?? "";
+        const rawArtist = currentSong.artist ?? "";
+        const title = cleanTitle(rawTitle);
+        const artist = cleanArtist(rawArtist);
+
+        // 1. lrclib exact match (cleaned title)
+        let data = await fetchLrclib(artist, title);
+
+        // 2. lrclib exact match (raw title, in case cleaning broke it)
+        if (!data?.syncedLyrics && !data?.plainLyrics) {
+          data = await fetchLrclib(rawArtist, rawTitle);
+        }
+
+        // 3. lrclib fuzzy search
+        if (!data?.syncedLyrics && !data?.plainLyrics) {
+          data = await searchLrclib(artist, title);
+        }
+
+        // Use synced lyrics if found
+        if (data?.syncedLyrics) {
           const parsed = parseLRC(data.syncedLyrics);
           if (parsed.length > 0) {
             setLyrics(parsed);
@@ -65,12 +120,24 @@ export default function KaraokePanel({ currentSong, getSyncedPosition, isPlaying
             return;
           }
         }
-        if (data.plainLyrics) {
+
+        // Use lrclib plain lyrics if found
+        if (data?.plainLyrics) {
           setPlainLyrics(data.plainLyrics);
           setHasSynced(false);
           setStatus("ready");
           return;
         }
+
+        // 4. Fallback: lyrics.ovh (much larger catalog, plain text only)
+        const ovhLyrics = await fetchLyricsOvh(artist, title);
+        if (ovhLyrics) {
+          setPlainLyrics(ovhLyrics);
+          setHasSynced(false);
+          setStatus("ready");
+          return;
+        }
+
         setStatus("no_lyrics");
       } catch {
         setStatus("no_lyrics");
