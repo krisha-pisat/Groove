@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function useRoomMusicState(roomCode) {
@@ -10,6 +10,10 @@ export default function useRoomMusicState(roomCode) {
     updated_at: null,
     receivedAt: null,   // local timestamp when THIS device received the state
   });
+
+  // Each hook instance gets a unique channel name so multiple callers
+  // (Room.jsx + KaraokePanel) don't share/clobber the same Supabase channel.
+  const instanceId = useRef(Math.random().toString(36).slice(2, 8));
 
   useEffect(() => {
     if (!roomCode) return;
@@ -32,7 +36,7 @@ export default function useRoomMusicState(roomCode) {
     fetchState();
 
     const channel = supabase
-      .channel(`room-music-${roomCode}`)
+      .channel(`room-music-${roomCode}-${instanceId.current}`)
       .on("postgres_changes", {
         event: "UPDATE", schema: "public", table: "room_music_state",
         filter: `room_code=eq.${roomCode}`
