@@ -1,261 +1,316 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Mic, MicOff, Volume2, Search, Star, Play, Users } from "lucide-react";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { Mic, Music2 } from "lucide-react";
 
-const KaraokePanel = () => {
-  const [isRecording, setIsRecording] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSong, setSelectedSong] = useState(null);
+function parseLRC(lrc) {
+  const lines = [];
+  const regex = /\[(\d{2}):(\d{2})[.:](\d{2,3})\](.*)/;
+  for (const raw of lrc.split("\n")) {
+    const m = raw.match(regex);
+    if (!m) continue;
+    const text = m[4].trim();
+    if (!text) continue;
+    const time = parseInt(m[1]) * 60 + parseInt(m[2]) + parseFloat("0." + m[3]);
+    lines.push({ time, line: text });
+  }
+  return lines;
+}
 
-  const karaokeSongs = [
-    {
-      id: "1",
-      title: "Bohemian Rhapsody",
-      artist: "Queen",
-      difficulty: 5,
-      duration: "5:55",
-      genre: "Rock",
-      popularity: 95
-    },
-    {
-      id: "2",
-      title: "Sweet Caroline",
-      artist: "Neil Diamond",
-      difficulty: 2,
-      duration: "3:21",
-      genre: "Pop",
-      popularity: 88
-    },
-    {
-      id: "3",
-      title: "Yesterday",
-      artist: "The Beatles",
-      difficulty: 3,
-      duration: "2:05",
-      genre: "Pop",
-      popularity: 92
-    },
-    {
-      id: "4",
-      title: "I Will Survive",
-      artist: "Gloria Gaynor",
-      difficulty: 3,
-      duration: "7:37",
-      genre: "Disco",
-      popularity: 85
-    },
-    {
-      id: "5",
-      title: "Don't Stop Believin'",
-      artist: "Journey",
-      difficulty: 4,
-      duration: "4:09",
-      genre: "Rock",
-      popularity: 90
+export default function KaraokePanel({ currentSong, getSyncedPosition, isPlaying }) {
+  const [lyrics, setLyrics] = useState([]);
+  const [plainLyrics, setPlainLyrics] = useState("");
+  const [hasSynced, setHasSynced] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [status, setStatus] = useState("no_song");
+
+  const scrollContainerRef = useRef(null);
+  const activeRef = useRef(null);
+  const pollRef = useRef(null);
+  const lastVideoId = useRef(null);
+
+  // Fetch lyrics when song changes
+  useEffect(() => {
+    if (!currentSong?.title) {
+      setStatus("no_song");
+      setLyrics([]);
+      setPlainLyrics("");
+      lastVideoId.current = null;
+      return;
     }
-  ];
+    if (lastVideoId.current === currentSong.videoId) return;
+    lastVideoId.current = currentSong.videoId;
 
-  const karaokeQueue = [
-    { user: "Alex", song: "Sweet Caroline", waitTime: "2 min" },
-    { user: "Jordan", song: "Yesterday", waitTime: "8 min" },
-    { user: "Sam", song: "I Will Survive", waitTime: "11 min" }
-  ];
+    setStatus("loading");
+    setLyrics([]);
+    setPlainLyrics("");
+    setActiveIndex(-1);
+    setCurrentTime(0);
+    setHasSynced(false);
 
-  const filteredSongs = karaokeSongs.filter(song => 
-    song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    song.artist.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    const load = async () => {
+      try {
+        const params = new URLSearchParams({
+          artist_name: currentSong.artist ?? "",
+          track_name: currentSong.title ?? "",
+        });
+        const res = await fetch(`https://lrclib.net/api/get?${params}`);
+        if (!res.ok) { setStatus("no_lyrics"); return; }
+        const data = await res.json();
+        if (data.syncedLyrics) {
+          const parsed = parseLRC(data.syncedLyrics);
+          if (parsed.length > 0) {
+            setLyrics(parsed);
+            setHasSynced(true);
+            setStatus("ready");
+            return;
+          }
+        }
+        if (data.plainLyrics) {
+          setPlainLyrics(data.plainLyrics);
+          setHasSynced(false);
+          setStatus("ready");
+          return;
+        }
+        setStatus("no_lyrics");
+      } catch {
+        setStatus("no_lyrics");
+      }
+    };
+    load();
+  }, [currentSong?.videoId, currentSong?.title, currentSong?.artist]);
 
-  const getDifficultyColor = (difficulty) => {
-    if (difficulty <= 2) return "text-green-500";
-    if (difficulty <= 3) return "text-yellow-500";
-    return "text-red-500";
-  };
+  // Poll for current time + active line (100ms for word-level responsiveness)
+  useEffect(() => {
+    clearInterval(pollRef.current);
+    if (!hasSynced || lyrics.length === 0) return;
+    pollRef.current = setInterval(() => {
+      const t = getSyncedPosition();
+      setCurrentTime(t);
+      setActiveIndex((prev) => {
+        let idx = -1;
+        for (let i = 0; i < lyrics.length; i++) {
+          if (lyrics[i].time <= t) idx = i;
+          else break;
+        }
+        return idx !== prev ? idx : prev;
+      });
+    }, 100);
+    return () => clearInterval(pollRef.current);
+  }, [hasSynced, lyrics, getSyncedPosition]);
 
-  const getDifficultyText = (difficulty) => {
-    if (difficulty <= 2) return "Easy";
-    if (difficulty <= 3) return "Medium";
-    return "Hard";
-  };
+  // Smooth scroll: keep active line ~35% from top so upcoming lines are visible
+  useEffect(() => {
+    if (!activeRef.current || !scrollContainerRef.current) return;
+    const container = scrollContainerRef.current;
+    const el = activeRef.current;
+    const target = el.offsetTop - container.clientHeight * 0.35;
+    container.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+  }, [activeIndex]);
+
+  // Pre-compute per-word start times for every line using linear interpolation
+  const wordTimings = useMemo(() => {
+    return lyrics.map((item, i) => {
+      const words = item.line.split(" ");
+      const lineStart = item.time;
+      const lineEnd = lyrics[i + 1]?.time ?? lineStart + 5;
+      const lineDuration = Math.max(lineEnd - lineStart, 0.1);
+      const wordDur = lineDuration / words.length;
+      return words.map((word, j) => ({
+        word,
+        startTime: lineStart + j * wordDur,
+      }));
+    });
+  }, [lyrics]);
 
   return (
-    <div className="space-y-6">
-      {/* Karaoke Status */}
-      <Card className="bg-muted/30 border-border">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 bg-gradient-primary rounded-full flex items-center justify-center">
-                <Mic className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground">Karaoke Mode</h3>
-                <p className="text-sm text-muted-foreground">
-                  Currently: <span className="text-primary font-medium">Available</span>
-                </p>
-              </div>
-            </div>
-            <Button
-              variant={isRecording ? "destructive" : "hero"}
-              onClick={() => setIsRecording(!isRecording)}
-              className="flex items-center gap-2"
-            >
-              {isRecording ? <><MicOff className="w-4 h-4" /><span>Stop</span></> : <><Mic className="w-4 h-4" /><span>Start Singing</span></>}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Song Library */}
-        <div className="space-y-4">
-          <div>
-            <h4 className="font-semibold text-foreground mb-2">Song Library</h4>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search songs or artists..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-input border-border"
-              />
-            </div>
-          </div>
-
-          <ScrollArea className="h-80">
-            <div className="space-y-2">
-              {filteredSongs.map((song) => (
-                <Card 
-                  key={song.id} 
-                  className={`bg-muted/20 border-border cursor-pointer hover:bg-muted/30 transition-colors ${
-                    selectedSong && selectedSong.id === song.id ? 'ring-2 ring-primary' : ''
-                  }`}
-                  onClick={() => setSelectedSong(song)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h5 className="font-medium text-foreground truncate">
-                            {song.title}
-                          </h5>
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-3 h-3 ${
-                                  i < Math.floor(song.popularity / 20) 
-                                    ? 'text-yellow-500 fill-current' 
-                                    : 'text-gray-300'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">{song.artist}</p>
-                        <div className="flex items-center gap-2 text-xs">
-                          <Badge variant="outline" className="text-xs">
-                            {song.genre}
-                          </Badge>
-                          <Badge 
-                            variant="outline" 
-                            className={`text-xs ${getDifficultyColor(song.difficulty)}`}
-                          >
-                            {getDifficultyText(song.difficulty)}
-                          </Badge>
-                          <span className="text-muted-foreground">{song.duration}</span>
-                        </div>
-                      </div>
-                      
-                      <Button variant="ghost" size="sm">
-                        <Play className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </ScrollArea>
-
-          {selectedSong && (
-            <Button variant="hero" className="w-full">
-              <Mic className="w-4 h-4" />
-              Add "{selectedSong.title}" to Queue
-            </Button>
+    <div className="w-full select-none">
+      {/* Song info bar */}
+      {currentSong?.title && (
+        <div className="flex items-center gap-3 mb-5 p-3 md:p-4 rounded-2xl bg-gradient-to-r from-[#a259ff]/10 to-[#f246a9]/10 border border-[#a259ff]/20">
+          {currentSong.thumbnail && (
+            <img
+              src={currentSong.thumbnail}
+              alt="cover"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-xl object-cover shrink-0 shadow-lg"
+            />
           )}
+          <div className="min-w-0 flex-1">
+            <p className="text-white font-bold text-sm md:text-base truncate">{currentSong.title}</p>
+            <p className="text-[#a259ff] text-xs md:text-sm truncate">{currentSong.artist}</p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <div className={`w-2 h-2 rounded-full ${isPlaying ? "bg-green-400 animate-pulse" : "bg-gray-500"}`} />
+            <span className="text-xs text-gray-400">
+              {hasSynced ? "Synced" : status === "ready" ? "Lyrics" : ""}
+            </span>
+          </div>
         </div>
+      )}
 
-        {/* Karaoke Queue */}
-        <div className="space-y-4">
-          <h4 className="font-semibold text-foreground">Karaoke Queue</h4>
-          
-          <Card className="bg-muted/20 border-border">
-            <CardContent className="p-4">
-              {karaokeQueue.length === 0 ? (
-                <div className="text-center py-8">
-                  <Mic className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">No one in queue</p>
-                  <p className="text-sm text-muted-foreground">Be the first to sing!</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {karaokeQueue.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <Badge variant="secondary" className="w-8 h-8 p-0 flex items-center justify-center">
-                          {index + 1}
-                        </Badge>
-                        <div>
-                          <p className="font-medium text-foreground">{item.user}</p>
-                          <p className="text-sm text-muted-foreground">{item.song}</p>
-                        </div>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        ~{item.waitTime}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Karaoke Controls */}
-          <Card className="bg-muted/20 border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Audio Settings</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground">Microphone</span>
-                <Button variant="outline" size="sm">
-                  <Volume2 className="w-4 h-4" />
-                  Test Mic
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground">Voice Effects</span>
-                <Button variant="outline" size="sm">
-                  Configure
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground">Backing Track</span>
-                <Button variant="outline" size="sm">
-                  <Users className="w-4 h-4" />
-                  Enable
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+      {/* No song */}
+      {status === "no_song" && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#a259ff]/20 to-[#f246a9]/20 flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(162,89,255,0.2)]">
+            <Mic className="w-9 h-9 text-[#a259ff]" />
+          </div>
+          <p className="text-white font-semibold text-lg mb-2">No song playing</p>
+          <p className="text-gray-500 text-sm">Add a song to the queue to see lyrics</p>
         </div>
-      </div>
+      )}
+
+      {/* Loading */}
+      {status === "loading" && (
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="relative w-14 h-14 mb-5">
+            <div className="absolute inset-0 rounded-full border-2 border-[#a259ff]/20" />
+            <div className="absolute inset-0 rounded-full border-2 border-t-[#a259ff] border-r-[#f246a9] animate-spin" />
+            <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#a259ff]/10 to-[#f246a9]/10 flex items-center justify-center">
+              <Mic className="w-4 h-4 text-[#a259ff]" />
+            </div>
+          </div>
+          <p className="text-gray-400 text-sm">Fetching lyrics for</p>
+          <p className="text-white font-semibold text-sm mt-1 truncate max-w-[200px]">{currentSong?.title}</p>
+        </div>
+      )}
+
+      {/* No lyrics */}
+      {status === "no_lyrics" && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="w-20 h-20 rounded-full bg-[#1e1e2e] border border-[#232336] flex items-center justify-center mb-4">
+            <Music2 className="w-9 h-9 text-gray-500" />
+          </div>
+          <p className="text-white font-semibold text-lg mb-2">No lyrics found</p>
+          <p className="text-gray-500 text-sm max-w-xs">
+            Lyrics aren't available for{" "}
+            <span className="text-gray-400">"{currentSong?.title}"</span> yet
+          </p>
+        </div>
+      )}
+
+      {/* Plain (unsynced) lyrics */}
+      {status === "ready" && !hasSynced && plainLyrics && (
+        <div className="overflow-y-auto max-h-[480px] px-2 text-center [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: "none" }}>
+          <div className="h-4" />
+          {plainLyrics.split("\n").map((line, i) =>
+            line.trim() ? (
+              <p key={i} className="text-gray-300 text-sm leading-relaxed py-1">{line}</p>
+            ) : (
+              <div key={i} className="h-3" />
+            )
+          )}
+          <div className="h-4" />
+        </div>
+      )}
+
+      {/* Synced karaoke view */}
+      {status === "ready" && hasSynced && lyrics.length > 0 && (
+        <div className="relative" style={{ height: "480px" }}>
+          {/* Top fade */}
+          <div
+            className="pointer-events-none absolute top-0 left-0 right-0 z-10"
+            style={{ height: "100px", background: "linear-gradient(to bottom, #0f0f18 0%, transparent 100%)" }}
+          />
+          {/* Bottom fade */}
+          <div
+            className="pointer-events-none absolute bottom-0 left-0 right-0 z-10"
+            style={{ height: "100px", background: "linear-gradient(to top, #0f0f18 0%, transparent 100%)" }}
+          />
+
+          <div
+            ref={scrollContainerRef}
+            className="overflow-y-auto h-full [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: "none" }}
+          >
+            <div style={{ height: "160px" }} />
+
+            {lyrics.map((item, i) => {
+              const isActive = i === activeIndex;
+              const isPast = i < activeIndex;
+              const dist = i - activeIndex; // negative = past, 0 = active, positive = future
+
+              // Opacity based on distance from active
+              const opacity = isActive
+                ? 1
+                : dist === 1
+                ? 0.55
+                : dist === -1
+                ? 0.35
+                : dist === 2
+                ? 0.35
+                : 0.18;
+
+              // Font size based on distance
+              const fontSize = isActive
+                ? "clamp(1.35rem, 3.5vw, 1.75rem)"
+                : dist === 1 || dist === -1
+                ? "clamp(1rem, 2.5vw, 1.2rem)"
+                : "clamp(0.85rem, 2vw, 1rem)";
+
+              const words = wordTimings[i] ?? [];
+
+              return (
+                <div
+                  key={i}
+                  ref={isActive ? activeRef : null}
+                  className="text-center px-4 md:px-8 transition-all duration-500"
+                  style={{
+                    opacity,
+                    paddingTop: isActive ? "14px" : "8px",
+                    paddingBottom: isActive ? "14px" : "8px",
+                  }}
+                >
+                  {isActive ? (
+                    // Active line: word-by-word highlighting
+                    <span className="leading-snug" style={{ fontSize, fontWeight: 800 }}>
+                      {words.map((w, j) => {
+                        const lit = currentTime >= w.startTime;
+                        return (
+                          <span
+                            key={j}
+                            className="inline-block transition-all duration-150 mr-[0.3em]"
+                            style={
+                              lit
+                                ? {
+                                    background: "linear-gradient(90deg, #a259ff, #f246a9)",
+                                    WebkitBackgroundClip: "text",
+                                    WebkitTextFillColor: "transparent",
+                                    filter:
+                                      "drop-shadow(0 0 12px rgba(162,89,255,0.8)) drop-shadow(0 0 24px rgba(242,70,169,0.4))",
+                                    transform: "scale(1.05)",
+                                    display: "inline-block",
+                                  }
+                                : {
+                                    color: "rgba(255,255,255,0.35)",
+                                    display: "inline-block",
+                                  }
+                            }
+                          >
+                            {w.word}
+                          </span>
+                        );
+                      })}
+                    </span>
+                  ) : (
+                    // Non-active lines: plain styled text
+                    <span
+                      className="leading-snug transition-all duration-500"
+                      style={{
+                        fontSize,
+                        fontWeight: isPast ? 500 : 600,
+                        color: isPast ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.9)",
+                      }}
+                    >
+                      {item.line}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+
+            <div style={{ height: "280px" }} />
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default KaraokePanel; 
+}
