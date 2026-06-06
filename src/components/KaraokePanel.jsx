@@ -73,8 +73,6 @@ export default function KaraokePanel({ roomCode }) {
   const [currentTime, setCurrentTime] = useState(0);
   const [status, setStatus] = useState("no_song");
 
-  const scrollContainerRef = useRef(null);
-  const activeRef = useRef(null);
   const pollRef = useRef(null);
   const lastVideoId = useRef(null);
   const getSyncedPositionRef = useRef(getSyncedPosition);
@@ -190,15 +188,6 @@ export default function KaraokePanel({ roomCode }) {
     return () => clearInterval(pollRef.current);
   }, [hasSynced, lyrics]);
 
-  // Smooth scroll: keep active line ~35% from top so upcoming lines are visible
-  useEffect(() => {
-    if (!activeRef.current || !scrollContainerRef.current) return;
-    const container = scrollContainerRef.current;
-    const el = activeRef.current;
-    const target = el.offsetTop - container.clientHeight * 0.35;
-    container.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
-  }, [activeIndex]);
-
   // Pre-compute per-word start times for every line using linear interpolation
   const wordTimings = useMemo(() => {
     return lyrics.map((item, i) => {
@@ -294,115 +283,96 @@ export default function KaraokePanel({ roomCode }) {
         </div>
       )}
 
-      {/* Synced karaoke view */}
-      {status === "ready" && hasSynced && lyrics.length > 0 && (
-        <div className="relative" style={{ height: "480px" }}>
-          {/* Top fade */}
-          <div
-            className="pointer-events-none absolute top-0 left-0 right-0 z-10"
-            style={{ height: "100px", background: "linear-gradient(to bottom, #0f0f18 0%, transparent 100%)" }}
-          />
-          {/* Bottom fade */}
-          <div
-            className="pointer-events-none absolute bottom-0 left-0 right-0 z-10"
-            style={{ height: "100px", background: "linear-gradient(to top, #0f0f18 0%, transparent 100%)" }}
-          />
+      {/* Synced karaoke view — fixed window, CSS-translate animation, no scroll */}
+      {status === "ready" && hasSynced && lyrics.length > 0 && (() => {
+        const LINE_H = 80;   // px per line slot
+        const ACTIVE_Y = 120; // px from container top where active line sits
+        const translateY = ACTIVE_Y - Math.max(activeIndex, 0) * LINE_H;
 
-          <div
-            ref={scrollContainerRef}
-            className="overflow-y-auto h-full [&::-webkit-scrollbar]:hidden"
-            style={{ scrollbarWidth: "none" }}
-          >
-            <div style={{ height: "160px" }} />
+        return (
+          <div className="relative overflow-hidden" style={{ height: "320px" }}>
+            {/* Top fade */}
+            <div
+              className="pointer-events-none absolute top-0 left-0 right-0 z-10"
+              style={{ height: "100px", background: "linear-gradient(to bottom, #0f0f18 0%, transparent 100%)" }}
+            />
+            {/* Bottom fade */}
+            <div
+              className="pointer-events-none absolute bottom-0 left-0 right-0 z-10"
+              style={{ height: "100px", background: "linear-gradient(to top, #0f0f18 0%, transparent 100%)" }}
+            />
 
-            {lyrics.map((item, i) => {
-              const isActive = i === activeIndex;
-              const isPast = i < activeIndex;
-              const dist = i - activeIndex; // negative = past, 0 = active, positive = future
+            <div
+              className="transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateY(${translateY}px)` }}
+            >
+              {lyrics.map((item, i) => {
+                const isActive = i === activeIndex;
+                const dist = Math.abs(i - activeIndex);
+                const opacity = isActive ? 1 : dist === 1 ? 0.5 : dist === 2 ? 0.22 : 0.08;
+                const fontSize = isActive
+                  ? "clamp(1.3rem, 3.5vw, 1.7rem)"
+                  : dist === 1
+                  ? "clamp(1rem, 2.5vw, 1.15rem)"
+                  : "clamp(0.85rem, 2vw, 1rem)";
+                const words = wordTimings[i] ?? [];
 
-              // Opacity based on distance from active
-              const opacity = isActive
-                ? 1
-                : dist === 1
-                ? 0.55
-                : dist === -1
-                ? 0.35
-                : dist === 2
-                ? 0.35
-                : 0.18;
-
-              // Font size based on distance
-              const fontSize = isActive
-                ? "clamp(1.35rem, 3.5vw, 1.75rem)"
-                : dist === 1 || dist === -1
-                ? "clamp(1rem, 2.5vw, 1.2rem)"
-                : "clamp(0.85rem, 2vw, 1rem)";
-
-              const words = wordTimings[i] ?? [];
-
-              return (
-                <div
-                  key={i}
-                  ref={isActive ? activeRef : null}
-                  className="text-center px-4 md:px-8 transition-all duration-500"
-                  style={{
-                    opacity,
-                    paddingTop: isActive ? "14px" : "8px",
-                    paddingBottom: isActive ? "14px" : "8px",
-                  }}
-                >
-                  {isActive ? (
-                    // Active line: word-by-word highlighting
-                    <span className="leading-snug" style={{ fontSize, fontWeight: 800 }}>
-                      {words.map((w, j) => {
-                        const lit = currentTime >= w.startTime;
-                        return (
-                          <span
-                            key={j}
-                            className="inline-block transition-all duration-150 mr-[0.3em]"
-                            style={
-                              lit
-                                ? {
-                                    background: "linear-gradient(90deg, #a259ff, #f246a9)",
-                                    WebkitBackgroundClip: "text",
-                                    WebkitTextFillColor: "transparent",
-                                    filter:
-                                      "drop-shadow(0 0 12px rgba(162,89,255,0.8)) drop-shadow(0 0 24px rgba(242,70,169,0.4))",
-                                    transform: "scale(1.05)",
-                                    display: "inline-block",
-                                  }
-                                : {
-                                    color: "rgba(255,255,255,0.35)",
-                                    display: "inline-block",
-                                  }
-                            }
-                          >
-                            {w.word}
-                          </span>
-                        );
-                      })}
-                    </span>
-                  ) : (
-                    // Non-active lines: plain styled text
-                    <span
-                      className="leading-snug transition-all duration-500"
-                      style={{
-                        fontSize,
-                        fontWeight: isPast ? 500 : 600,
-                        color: isPast ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.9)",
-                      }}
-                    >
-                      {item.line}
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-
-            <div style={{ height: "280px" }} />
+                return (
+                  <div
+                    key={i}
+                    className="text-center px-4 md:px-8 transition-opacity duration-500"
+                    style={{
+                      height: `${LINE_H}px`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      opacity,
+                    }}
+                  >
+                    {isActive ? (
+                      <span className="leading-tight" style={{ fontSize, fontWeight: 800 }}>
+                        {words.map((w, j) => {
+                          const lit = currentTime >= w.startTime;
+                          return (
+                            <span
+                              key={j}
+                              className="inline-block transition-all duration-150 mr-[0.3em]"
+                              style={
+                                lit
+                                  ? {
+                                      background: "linear-gradient(90deg, #a259ff, #f246a9)",
+                                      WebkitBackgroundClip: "text",
+                                      WebkitTextFillColor: "transparent",
+                                      filter: "drop-shadow(0 0 12px rgba(162,89,255,0.8)) drop-shadow(0 0 24px rgba(242,70,169,0.4))",
+                                      transform: "scale(1.05)",
+                                      display: "inline-block",
+                                    }
+                                  : {
+                                      color: "rgba(255,255,255,0.35)",
+                                      display: "inline-block",
+                                    }
+                              }
+                            >
+                              {w.word}
+                            </span>
+                          );
+                        })}
+                      </span>
+                    ) : (
+                      <span
+                        className="leading-tight transition-all duration-500"
+                        style={{ fontSize, fontWeight: 600, color: "rgba(255,255,255,0.9)" }}
+                      >
+                        {item.line}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }
