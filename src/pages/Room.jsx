@@ -34,6 +34,18 @@ import {
 } from "@/components/ui/select";
 import useRoomMusicState from "@/hooks/useRoomState";
 
+const AVATAR_COLORS = [
+  "#a259ff", "#f246a9", "#3b82f6", "#10b981",
+  "#f59e0b", "#ef4444", "#06b6d4", "#f97316",
+];
+
+function nameToColor(name) {
+  if (!name) return AVATAR_COLORS[0];
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+
 const Room = () => {
   const { roomCode } = useParams();
   const location = useLocation();
@@ -155,7 +167,8 @@ const Room = () => {
   };
 
   const addToQueue = useCallback(async (song) => {
-    const newQueue = syncedQueue ? [...syncedQueue, song] : [song];
+    const taggedSong = { ...song, addedBy: userName };
+    const newQueue = syncedQueue ? [...syncedQueue, taggedSong] : [taggedSong];
 
     if (!syncedCurrentSong || Object.keys(syncedCurrentSong).length === 0) {
       await updateMusicState({
@@ -629,6 +642,15 @@ const Room = () => {
                         </div>
                         <div className="flex items-center gap-1 md:gap-3 shrink-0">
                           <Badge variant="outline" className="hidden sm:flex text-xs">{song.duration}</Badge>
+                          {song.addedBy && (
+                            <div
+                              title={`Added by ${song.addedBy}`}
+                              className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 select-none"
+                              style={{ backgroundColor: nameToColor(song.addedBy) }}
+                            >
+                              {song.addedBy[0].toUpperCase()}
+                            </div>
+                          )}
                           <Button
                             variant="ghost"
                             size="icon"
