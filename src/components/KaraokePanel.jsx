@@ -59,6 +59,8 @@ async function fetchLyricsOvh(artist, title) {
 }
 
 export default function KaraokePanel({ currentSong, getSyncedPosition, isPlaying }) {
+  console.log("[Karaoke] render — currentSong:", currentSong?.title ?? "null", "videoId:", currentSong?.videoId ?? "null");
+
   const [lyrics, setLyrics] = useState([]);
   const [plainLyrics, setPlainLyrics] = useState("");
   const [hasSynced, setHasSynced] = useState(false);
