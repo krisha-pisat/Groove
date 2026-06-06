@@ -97,22 +97,33 @@ export default function KaraokePanel({ currentSong, getSyncedPosition, isPlaying
         const title = cleanTitle(rawTitle);
         const artist = cleanArtist(rawArtist);
 
-        // 1. lrclib exact match (cleaned title)
-        let data = await fetchLrclib(artist, title);
+        console.log("[Karaoke] Searching for lyrics");
+        console.log("[Karaoke] Raw title:", rawTitle, "| Raw artist:", rawArtist);
+        console.log("[Karaoke] Cleaned title:", title, "| Cleaned artist:", artist);
 
-        // 2. lrclib exact match (raw title, in case cleaning broke it)
+        // 1. lrclib exact match (cleaned title)
+        console.log("[Karaoke] Trying lrclib exact match (cleaned)...");
+        let data = await fetchLrclib(artist, title);
+        console.log("[Karaoke] lrclib (cleaned) result:", data);
+
+        // 2. lrclib exact match (raw title)
         if (!data?.syncedLyrics && !data?.plainLyrics) {
+          console.log("[Karaoke] Trying lrclib exact match (raw)...");
           data = await fetchLrclib(rawArtist, rawTitle);
+          console.log("[Karaoke] lrclib (raw) result:", data);
         }
 
         // 3. lrclib fuzzy search
         if (!data?.syncedLyrics && !data?.plainLyrics) {
+          console.log("[Karaoke] Trying lrclib fuzzy search...");
           data = await searchLrclib(artist, title);
+          console.log("[Karaoke] lrclib (search) result:", data);
         }
 
         // Use synced lyrics if found
         if (data?.syncedLyrics) {
           const parsed = parseLRC(data.syncedLyrics);
+          console.log("[Karaoke] Got synced lyrics, lines:", parsed.length);
           if (parsed.length > 0) {
             setLyrics(parsed);
             setHasSynced(true);
@@ -123,14 +134,17 @@ export default function KaraokePanel({ currentSong, getSyncedPosition, isPlaying
 
         // Use lrclib plain lyrics if found
         if (data?.plainLyrics) {
+          console.log("[Karaoke] Got plain lyrics from lrclib, chars:", data.plainLyrics.length);
           setPlainLyrics(data.plainLyrics);
           setHasSynced(false);
           setStatus("ready");
           return;
         }
 
-        // 4. Fallback: lyrics.ovh (much larger catalog, plain text only)
+        // 4. Fallback: lyrics.ovh
+        console.log("[Karaoke] Trying lyrics.ovh fallback...");
         const ovhLyrics = await fetchLyricsOvh(artist, title);
+        console.log("[Karaoke] lyrics.ovh result:", ovhLyrics ? `${ovhLyrics.length} chars` : "not found");
         if (ovhLyrics) {
           setPlainLyrics(ovhLyrics);
           setHasSynced(false);
@@ -138,8 +152,10 @@ export default function KaraokePanel({ currentSong, getSyncedPosition, isPlaying
           return;
         }
 
+        console.log("[Karaoke] No lyrics found from any source");
         setStatus("no_lyrics");
-      } catch {
+      } catch (err) {
+        console.error("[Karaoke] Error fetching lyrics:", err);
         setStatus("no_lyrics");
       }
     };
