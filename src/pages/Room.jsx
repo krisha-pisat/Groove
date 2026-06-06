@@ -643,7 +643,9 @@ const Room = () => {
 
                   <TabsContent value="chat"><ChatPanel userName={userName} roomCode={roomCode} /></TabsContent>
                   <TabsContent value="games"><GamePanel currentUserName={userName} roomCode={roomCode} /></TabsContent>
-                  <TabsContent value="karaoke"><KaraokePanel userName={userName} roomCode={roomCode} /></TabsContent>
+                  <TabsContent value="karaoke">
+                    <KaraokePanel roomCode={roomCode} />
+                  </TabsContent>
                 </div>
               </Tabs>
             </CardContent>

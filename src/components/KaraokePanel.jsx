@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { Mic, Music2 } from "lucide-react";
+import useRoomMusicState from "@/hooks/useRoomState";
 
 function parseLRC(lrc) {
   const lines = [];
@@ -58,7 +59,13 @@ async function fetchLyricsOvh(artist, title) {
   return data.lyrics ?? null;
 }
 
-export default function KaraokePanel({ currentSong, getSyncedPosition, isPlaying }) {
+export default function KaraokePanel({ roomCode }) {
+  const {
+    current_song_data: currentSong,
+    is_playing: isPlaying,
+    getSyncedPosition,
+  } = useRoomMusicState(roomCode);
+
   console.log("[Karaoke] render — currentSong:", currentSong?.title ?? "null", "videoId:", currentSong?.videoId ?? "null");
 
   const [lyrics, setLyrics] = useState([]);
