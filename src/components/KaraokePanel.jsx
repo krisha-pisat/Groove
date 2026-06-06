@@ -66,8 +66,6 @@ export default function KaraokePanel({ roomCode }) {
     getSyncedPosition,
   } = useRoomMusicState(roomCode);
 
-  console.log("[Karaoke] render — currentSong:", currentSong?.title ?? "null", "videoId:", currentSong?.videoId ?? "null");
-
   const [lyrics, setLyrics] = useState([]);
   const [plainLyrics, setPlainLyrics] = useState("");
   const [hasSynced, setHasSynced] = useState(false);
@@ -79,6 +77,8 @@ export default function KaraokePanel({ roomCode }) {
   const activeRef = useRef(null);
   const pollRef = useRef(null);
   const lastVideoId = useRef(null);
+  const getSyncedPositionRef = useRef(getSyncedPosition);
+  useEffect(() => { getSyncedPositionRef.current = getSyncedPosition; }, [getSyncedPosition]);
 
   // Fetch lyrics when song changes
   useEffect(() => {
@@ -176,7 +176,7 @@ export default function KaraokePanel({ roomCode }) {
     clearInterval(pollRef.current);
     if (!hasSynced || lyrics.length === 0) return;
     pollRef.current = setInterval(() => {
-      const t = getSyncedPosition();
+      const t = getSyncedPositionRef.current();
       setCurrentTime(t);
       setActiveIndex((prev) => {
         let idx = -1;
@@ -188,7 +188,7 @@ export default function KaraokePanel({ roomCode }) {
       });
     }, 100);
     return () => clearInterval(pollRef.current);
-  }, [hasSynced, lyrics, getSyncedPosition]);
+  }, [hasSynced, lyrics]);
 
   // Smooth scroll: keep active line ~35% from top so upcoming lines are visible
   useEffect(() => {

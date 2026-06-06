@@ -20,7 +20,13 @@ export default function useRoomMusicState(roomCode) {
         .select("*")
         .eq("room_code", roomCode)
         .single();
-      if (data) setState({ ...data, queue: data.queue || [], receivedAt: Date.now() });
+      if (data) setState({
+        ...data,
+        queue: data.queue || [],
+        // Use the server's updated_at as the time reference so elapsedSinceReceipt
+        // correctly reflects how long the song has been playing since the last state write
+        receivedAt: data.updated_at ? new Date(data.updated_at).getTime() : Date.now(),
+      });
     }
 
     fetchState();
