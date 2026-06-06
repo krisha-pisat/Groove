@@ -135,9 +135,9 @@ const Room = () => {
 
   const handlePlayerSongChange = useCallback((song, newQueue) => {
     updateMusicState({
-      current_song_data: song,
+      current_song_data: song ?? {},  // null violates NOT NULL constraint — use {} for "nothing playing"
       queue: newQueue,
-      is_playing: true,
+      is_playing: !!song,
       playback_position: 0,
     });
   }, [updateMusicState]);
