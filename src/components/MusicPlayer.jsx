@@ -34,6 +34,15 @@ const MusicPlayer = ({
   const [isYoutubeApiReady, setIsYoutubeApiReady] = useState(false); // State to track if window.YT is fully loaded
   const playerInstanceReady = useRef(false); // Tracks if playerRef.current is fully initialized and ready to receive commands
 
+  // Refs so the YouTube player's registered callbacks always see the latest values
+  // (the player's onStateChange is a stale closure — it captures props at creation time)
+  const queueRef = useRef(queue);
+  const isShufflingRef = useRef(isShuffling);
+  const onSongChangeRef = useRef(onSongChange);
+  useEffect(() => { queueRef.current = queue; }, [queue]);
+  useEffect(() => { isShufflingRef.current = isShuffling; }, [isShuffling]);
+  useEffect(() => { onSongChangeRef.current = onSongChange; }, [onSongChange]);
+
   // --- Volume Control ---
   useEffect(() => {
     setInternalVolume(volume);
@@ -257,10 +266,10 @@ const MusicPlayer = ({
     if (!currentSong || Object.keys(currentSong).length === 0) return;
 
     let newCurrentSong = null;
-    let newQueue = [...queue];
+    let newQueue = [...queueRef.current];
 
     if (newQueue.length > 0) {
-        if (isShuffling) {
+        if (isShufflingRef.current) {
             const randomIndex = Math.floor(Math.random() * newQueue.length);
             newCurrentSong = newQueue[randomIndex];
             newQueue.splice(randomIndex, 1);
@@ -269,7 +278,7 @@ const MusicPlayer = ({
             newQueue = newQueue.slice(1);
         }
     }
-    onSongChange(newCurrentSong, newQueue);
+    onSongChangeRef.current(newCurrentSong, newQueue);
     console.log("handleSkip: Sent skip command to Supabase.");
   };
 
