@@ -1,15 +1,14 @@
-import { useState, useEffect , useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Send, Smile, Music } from "lucide-react";
 
 const ChatPanel = ({ userName, roomCode }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   // Load existing messages and subscribe
   useEffect(() => {
@@ -40,8 +39,10 @@ const ChatPanel = ({ userName, roomCode }) => {
           filter: `room_code=eq.${roomCode}`,
         },
         (payload) => {
-          setMessages((prev) => {if (prev.find((m) => m.id === payload.new.id)) return prev;
-      return [...prev, payload.new];});
+          setMessages((prev) => {
+            if (prev.find((m) => m.id === payload.new.id)) return prev;
+            return [...prev, payload.new];
+          });
         }
       )
       .subscribe();
@@ -53,45 +54,48 @@ const ChatPanel = ({ userName, roomCode }) => {
 
   // Send message
   const handleSendMessage = async () => {
-  if (!newMessage.trim()) return;
+    if (!newMessage.trim()) return;
 
-  const { data, error } = await supabase
-    .from("chat_messages")
-    .insert({
-      room_code: roomCode,
-      user_name: userName,
-      message: newMessage,
-      type: "message",
-    })
-    // .select(); // 👈 this makes Supabase return the inserted row
+    const { data, error } = await supabase
+      .from("chat_messages")
+      .insert({
+        room_code: roomCode,
+        user_name: userName,
+        message: newMessage,
+        type: "message",
+      });
 
-  if (error) {
-    console.error("Error sending message:", error.message);
-  } else if (data && data.length > 0) {
-    // add to state immediately (with correct id)
-    setMessages((prev) => [...prev, data[0]]);
-  }
+    if (error) {
+      console.error("Error sending message:", error.message);
+    } else if (data && data.length > 0) {
+      setMessages((prev) => [...prev, data[0]]);
+    }
 
-  setNewMessage("");
-};
-
+    setNewMessage("");
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") handleSendMessage();
   };
 
-  //Auto scroll to bottom
+  // Scroll the messages div itself — never scrollIntoView (that moves the whole page)
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = messagesContainerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   return (
-    <div className="space-y-4">
-      {/* Chat Messages */}
-      <ScrollArea className="h-80 w-full rounded-lg border border-border bg-muted/20 p-4">
+    <div className="flex flex-col gap-3">
+      {/* Chat Messages — scrolls internally, never moves the page */}
+      <div
+        ref={messagesContainerRef}
+        className="overflow-y-auto rounded-lg border border-border bg-muted/20 p-4 [&::-webkit-scrollbar]:hidden"
+        style={{ height: "320px", scrollbarWidth: "none" }}
+      >
         <div className="space-y-3">
           {messages.map((msg) => (
             <div
@@ -106,7 +110,7 @@ const ChatPanel = ({ userName, roomCode }) => {
                 </div>
               ) : (
                 <>
-                  <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center text-sm">
+                  <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center text-sm shrink-0">
                     🎵
                   </div>
                   <div className="flex-1 min-w-0">
@@ -133,9 +137,8 @@ const ChatPanel = ({ userName, roomCode }) => {
               )}
             </div>
           ))}
-          <div ref={messagesEndRef} />
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Message Input */}
       <div className="flex gap-2">
@@ -145,6 +148,7 @@ const ChatPanel = ({ userName, roomCode }) => {
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyPress={handleKeyPress}
           className="flex-1 bg-input border-border text-foreground"
+          inputMode="text"
         />
         <Button variant="ghost" size="sm">
           <Smile className="w-4 h-4" />
